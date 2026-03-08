@@ -53,7 +53,7 @@ iframe{display:block;max-width:100%}
   border-bottom:1px solid #1a1a1a;
   min-height:52px;
 }
-.lnav-logo{display:flex;align-items:center;line-height:1}.lnav-logo img{height:36px;width:auto;object-fit:contain}
+.lnav-logo{display:flex;align-items:center;gap:.4rem;line-height:1;text-decoration:none}
 .lnav-right{display:flex;align-items:center;gap:.6rem}
 .lnav-search-icon{width:36px;height:36px;border:1px solid #222;display:flex;align-items:center;justify-content:center;color:#555;font-size:.9rem;border-radius:2px}
 .lnav-cta{padding:.45rem .9rem;background:#c9a84c;color:#0a0a0a;font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;font-weight:500;border-radius:1px;white-space:nowrap}
@@ -388,7 +388,7 @@ iframe{display:block;max-width:100%}
 <div class="page active" id="landing">
 
   <nav class="lnav">
-    <a class="lnav-logo"><img src="https://raw.githubusercontent.com/apanonstephane-prog/BeHere/main/BeHere%20Logo.PNG" alt="BeHere" onerror="this.style.display='none';this.parentNode.innerHTML='<span style=\"font-family:Bebas Neue,sans-serif;font-size:1.5rem;color:#c9a84c\">BeHere</span>'"></a>
+    <a class="lnav-logo"><img src="https://raw.githubusercontent.com/apanonstephane-prog/BeHere/main/BeHere%20Logo.PNG" alt="BeHere" style="height:32px;width:32px;object-fit:cover;border-radius:4px;margin-right:.5rem"><span style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.06em;color:#c9a84c;line-height:1">BeHere</span></a>
     <div class="lnav-right">
       <div class="lnav-search-icon">⌕</div>
       <a class="lnav-cta">Créer ma page</a>
@@ -399,8 +399,10 @@ iframe{display:block;max-width:100%}
   <section class="l-hero">
     <div class="l-hero-bg"></div>
     <div class="l-hero-grid"></div>
-    <div class="l-hero-content">
-      <div style="margin-bottom:1.5rem"><img src="https://raw.githubusercontent.com/apanonstephane-prog/BeHere/main/BeHere%20Logo.PNG" alt="BeHere" style="height:80px;width:auto;object-fit:contain;margin:0 auto;display:block" onerror="this.style.display='none'"></div>
+    <div class="l-hero-logo" id="heroLogo">
+    <img src="https://raw.githubusercontent.com/apanonstephane-prog/BeHere/main/BeHere%20Logo.PNG" alt="BeHere">
+  </div>
+  <div class="l-hero-content">
       <div class="l-hero-tag">La plateforme des artistes</div>
       <h1 class="l-hero-title">Sois là où<br>tu dois <em>être.</em></h1>
       <p class="l-hero-sub">Ta page artiste pro, générée automatiquement par l'IA en 5 minutes.</p>
