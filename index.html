@@ -53,7 +53,7 @@ iframe{display:block;max-width:100%}
   border-bottom:1px solid #1a1a1a;
   min-height:52px;
 }
-.lnav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.06em;color:#c9a84c;line-height:1}
+.lnav-logo{display:flex;align-items:center;line-height:1}.lnav-logo img{height:36px;width:auto;object-fit:contain}
 .lnav-right{display:flex;align-items:center;gap:.6rem}
 .lnav-search-icon{width:36px;height:36px;border:1px solid #222;display:flex;align-items:center;justify-content:center;color:#555;font-size:.9rem;border-radius:2px}
 .lnav-cta{padding:.45rem .9rem;background:#c9a84c;color:#0a0a0a;font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;font-weight:500;border-radius:1px;white-space:nowrap}
@@ -200,7 +200,7 @@ iframe{display:block;max-width:100%}
 /* FOOTER LANDING */
 .l-footer{background:#080808;border-top:1px solid #111;padding:1rem;padding-bottom:calc(1rem + env(safe-area-inset-bottom))}
 .l-footer-inner{display:flex;justify-content:space-between;align-items:center}
-.lf-logo{font-family:'Bebas Neue',sans-serif;font-size:1rem;color:#c9a84c;letter-spacing:.06em}
+.lf-logo{display:flex;align-items:center}
 .lf-copy{font-family:'DM Mono',monospace;font-size:.52rem;color:#222;letter-spacing:.08em;text-transform:uppercase}
 
 /* ════════════════════════════════
@@ -388,7 +388,7 @@ iframe{display:block;max-width:100%}
 <div class="page active" id="landing">
 
   <nav class="lnav">
-    <a class="lnav-logo">BeHere</a>
+    <a class="lnav-logo"><img src="https://raw.githubusercontent.com/apanonstephane-prog/BeHere/main/BeHere_Logo.PNG" alt="BeHere" onerror="this.style.display='none';this.parentNode.innerHTML='<span style=\"font-family:Bebas Neue,sans-serif;font-size:1.5rem;color:#c9a84c\">BeHere</span>'"></a>
     <div class="lnav-right">
       <div class="lnav-search-icon">⌕</div>
       <a class="lnav-cta">Créer ma page</a>
@@ -400,6 +400,7 @@ iframe{display:block;max-width:100%}
     <div class="l-hero-bg"></div>
     <div class="l-hero-grid"></div>
     <div class="l-hero-content">
+      <div style="margin-bottom:1.5rem"><img src="https://raw.githubusercontent.com/apanonstephane-prog/BeHere/main/BeHere_Logo.PNG" alt="BeHere" style="height:80px;width:auto;object-fit:contain;margin:0 auto;display:block" onerror="this.style.display='none'"></div>
       <div class="l-hero-tag">La plateforme des artistes</div>
       <h1 class="l-hero-title">Sois là où<br>tu dois <em>être.</em></h1>
       <p class="l-hero-sub">Ta page artiste pro, générée automatiquement par l'IA en 5 minutes.</p>
@@ -629,7 +630,7 @@ iframe{display:block;max-width:100%}
 
   <footer class="l-footer">
     <div class="l-footer-inner">
-      <div class="lf-logo">BeHere</div>
+      <div class="lf-logo"><img src="https://raw.githubusercontent.com/apanonstephane-prog/BeHere/main/BeHere_Logo.PNG" alt="BeHere" style="height:28px;width:auto;object-fit:contain" onerror="this.outerHTML='BeHere'"></div>
       <div class="lf-copy">© 2026 BeHere</div>
     </div>
   </footer>
@@ -785,8 +786,8 @@ iframe{display:block;max-width:100%}
     <div class="contact-columns">
       <div>
         <p class="contact-intro">Pour toute demande de booking, collaboration artistique ou interview presse.</p>
-        <div class="contact-item"><span class="ci-label">Booking / Label</span><span class="ci-value"><a href="mailto:bande2loups@gmail.com">bande2loups@gmail.com</a></span></div>
-        <div class="contact-item"><span class="ci-label">Contact artiste</span><span class="ci-value"><a href="mailto:monstaaa-official@hotmail.fr">monstaaa-official@hotmail.fr</a></span></div>
+        <div class="contact-item"><span class="ci-label">Booking / Label</span><span class="ci-value"><a href="/cdn-cgi/l/email-protection#b2d0d3dcd6d780deddc7c2c1f2d5dfd3dbde9cd1dddf"><span class="__cf_email__" data-cfemail="83e1e2ede7e6b1efecf6f3f0c3e4eee2eaefade0ecee">[email&#160;protected]</span></a></span></div>
+        <div class="contact-item"><span class="ci-label">Contact artiste</span><span class="ci-value"><a href="/cdn-cgi/l/email-protection#64090b0a1710050505490b02020d070d0508240c0b1009050d084a0216"><span class="__cf_email__" data-cfemail="7d1012130e091c1c1c50121b1b141e141c113d151209101c1411531b0f">[email&#160;protected]</span></a></span></div>
         <div class="contact-item"><span class="ci-label">Label</span><span class="ci-value">Bande 2 Loups Records</span></div>
         <div class="contact-item"><span class="ci-label">Zone</span><span class="ci-value">Lyon · Toulouse · International</span></div>
       </div>
@@ -803,7 +804,7 @@ iframe{display:block;max-width:100%}
   </section>
 
   <div class="behere-bar">
-    <div class="bb-powered">Page générée par <span>BeHere</span></div>
+    <div class="bb-powered" style="display:flex;align-items:center;gap:.5rem"><img src="https://raw.githubusercontent.com/apanonstephane-prog/BeHere/main/BeHere_Logo.PNG" alt="BeHere" style="height:20px;width:auto;object-fit:contain" onerror="this.style.display='none'"> <span style="color:#c9a84c">BeHere</span></div>
     <a class="bb-cta" onclick="go('landing',document.querySelectorAll('.sw-btn')[0])">Créer ma page →</a>
   </div>
 
@@ -815,7 +816,7 @@ iframe{display:block;max-width:100%}
   </footer>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 function go(id, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.sw-btn').forEach(b => b.classList.remove('active'));
@@ -823,14 +824,4 @@ function go(id, btn) {
   if (btn) btn.classList.add('active');
   window.scrollTo(0, 0);
 }
-document.querySelectorAll('.ftag').forEach(t => t.addEventListener('click', function() {
-  document.querySelectorAll('.ftag').forEach(x => x.classList.remove('active'));
-  this.classList.add('active');
-}));
-document.querySelectorAll('.ftab').forEach(t => t.addEventListener('click', function() {
-  document.querySelectorAll('.ftab').forEach(x => x.classList.remove('active'));
-  this.classList.add('active');
-}));
-</script>
-</body>
-</html>
+document.querySelectorAll('.ftag').forEa
