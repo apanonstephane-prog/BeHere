@@ -531,29 +531,35 @@ display:block;
       </div>
     </div>
     <div class="hero-strip">
-      <div class="hero-artist" onclick="go('artist',document.querySelectorAll('.sw-btn')[1])">
-        <div class="ha-label">Artiste du moment</div>
+      <div class="hero-artist" onclick="openArtist('monstaaa');document.querySelectorAll('.sw-btn').forEach(function(b,i){b.classList.toggle('active',i===1)})">
+        <div class="ha-label">◆ Artiste du moment</div>
         <div class="ha-name">Monstaaa L'Ovni</div>
         <div class="ha-genre">Hip-Hop · Reggae · Toulouse</div>
         <div class="ha-new">▶ Juste Une Minute — 2026</div>
       </div>
-      <div class="hero-artist">
-        <div class="ha-label">Nouveau</div>
-        <div class="ha-name">Kali Rose</div>
-        <div class="ha-genre">Photographie · Paris</div>
-        <div class="ha-new">◆ Portfolio mis à jour</div>
+      <div class="hero-artist" onclick="openArtist('yaniss-odua');document.querySelectorAll('.sw-btn').forEach(function(b,i){b.classList.toggle('active',i===1)})">
+        <div class="ha-label">346K Spotify</div>
+        <div class="ha-name">Yaniss Odua</div>
+        <div class="ha-genre">Reggae Roots · Martinique</div>
+        <div class="ha-new">▶ Mon Frère feat. FNX — 2025</div>
       </div>
-      <div class="hero-artist">
-        <div class="ha-label">Tendance</div>
-        <div class="ha-name">Diego Mart</div>
-        <div class="ha-genre">Street Art · Bordeaux</div>
-        <div class="ha-new">✦ Expo — Avril 2026</div>
+      <div class="hero-artist" onclick="openArtist('booba');document.querySelectorAll('.sw-btn').forEach(function(b,i){b.classList.toggle('active',i===1)})">
+        <div class="ha-label">5M Spotify</div>
+        <div class="ha-name">Booba</div>
+        <div class="ha-genre">Rap FR · DUC Records</div>
+        <div class="ha-new">◆ Boulogne-Billancourt · Miami</div>
       </div>
-      <div class="hero-artist">
-        <div class="ha-label">Coup de cœur</div>
-        <div class="ha-name">Séraphine V.</div>
-        <div class="ha-genre">Danse · Lyon</div>
-        <div class="ha-new">▸ Nouveau clip</div>
+      <div class="hero-artist" onclick="openArtist('snoop-dogg');document.querySelectorAll('.sw-btn').forEach(function(b,i){b.classList.toggle('active',i===1)})">
+        <div class="ha-label">32.9M Spotify</div>
+        <div class="ha-name">Snoop Dogg</div>
+        <div class="ha-genre">West Coast · Long Beach</div>
+        <div class="ha-new">◆ Icône · JO Paris 2024</div>
+      </div>
+      <div class="hero-artist" onclick="openArtist('sizzla');document.querySelectorAll('.sw-btn').forEach(function(b,i){b.classList.toggle('active',i===1)})">
+        <div class="ha-label">1.3M Spotify</div>
+        <div class="ha-name">Sizzla</div>
+        <div class="ha-genre">Reggae Roots · Jamaïque</div>
+        <div class="ha-new">◆ 50+ albums · Légende</div>
       </div>
     </div>
   </section>
@@ -595,109 +601,120 @@ display:block;
       </div>
 
 ```
-  <!-- Featured -->
-  <div class="post-featured" onclick="go('artist',document.querySelectorAll('.sw-btn')[1])">
+  <!-- Featured — Monstaaa -->
+  <div class="post-featured" onclick="openArtist('monstaaa');document.querySelectorAll('.sw-btn').forEach(function(b,i){b.classList.toggle('active',i===1)})" style="cursor:pointer">
     <img class="post-featured-img" src="https://raw.githubusercontent.com/apanonstephane-prog/Monstaaa-portfolio/main/IMG_9468.jpg" alt="Monstaaa L'Ovni" loading="eager">
     <div class="pf-body">
-      <div class="pf-cat">✦ À la une · Musique</div>
+      <div class="pf-cat">✦ À la une · B2L Records · Toulouse</div>
       <div class="pf-title">Monstaaa L'Ovni sort « Juste Une Minute » et confirme son retour</div>
-      <div class="pf-desc">Après Le Son du Four et Mada en 2025, l'artiste toulousain frappe fort avec ce nouveau single.</div>
+      <div class="pf-desc">Après Le Son du Four et Mada en 2025, l'artiste toulousain frappe fort avec ce nouveau single. 20 ans de carrière, 3 continents.</div>
       <div class="pf-meta"><span>B2L Records</span><span>·</span><span>Mars 2026</span><span>·</span><span>Toulouse</span></div>
     </div>
   </div>
 
-  <!-- Grid -->
+  <!-- Grid 2x2 vrais artistes -->
   <div class="posts-grid">
-    <div class="post-card">
-      <img class="post-card-img" src="https://raw.githubusercontent.com/apanonstephane-prog/Monstaaa-portfolio/main/IMG_9462.JPG" alt="BIPOLAR" loading="lazy">
+    <div class="post-card" onclick="openArtist('sizzla');document.querySelectorAll('.sw-btn').forEach(function(b,i){b.classList.toggle('active',i===1)})" style="cursor:pointer">
+      <img class="post-card-img" id="card-img-sizzla" src="https://i.scdn.co/image/ab6761610000e5eb54b90f8f14a949ad47f0c33a" alt="Sizzla" loading="lazy">
       <div class="pc-body">
-        <div class="pc-cat">Musique · Mixtape</div>
-        <div class="pc-title">BIPOLAR : la mixtape la plus personnelle de L'Ovni</div>
-        <div class="pc-meta">2023 · B2L Records</div>
+        <div class="pc-cat">Reggae Roots · Jamaïque · 1.3M Spotify</div>
+        <div class="pc-title">Sizzla — 50+ albums, légende vivante du reggae roots</div>
+        <div class="pc-meta">Xterminator · depuis 1995</div>
       </div>
     </div>
-    <div class="post-card">
-      <img class="post-card-img" src="https://raw.githubusercontent.com/apanonstephane-prog/Monstaaa-portfolio/main/IMG_4101.JPG" alt="Concert" loading="lazy">
+    <div class="post-card" onclick="openArtist('booba');document.querySelectorAll('.sw-btn').forEach(function(b,i){b.classList.toggle('active',i===1)})" style="cursor:pointer">
+      <img class="post-card-img" id="card-img-booba" src="https://i.scdn.co/image/ab6761610000e5eba03696716c9ee605006047fd" alt="Booba" loading="lazy">
       <div class="pc-body">
-        <div class="pc-cat">Scène · Concert</div>
-        <div class="pc-title">Exit Festival 2012 — même affiche que Guns N' Roses</div>
-        <div class="pc-meta">Novi Sad · 150K festivaliers</div>
+        <div class="pc-cat">Rap FR · DUC Records · 5M Spotify</div>
+        <div class="pc-title">Booba — du Duc à Miami, l'incontournable du rap FR</div>
+        <div class="pc-meta">DUC Records · depuis 2002</div>
       </div>
     </div>
   </div>
 
-  <!-- List -->
+  <!-- List vrais artistes -->
   <div class="post-list">
-    <div class="post-row">
-      <img class="post-row-img" src="https://raw.githubusercontent.com/apanonstephane-prog/Monstaaa-portfolio/main/IMG_9459.JPG" alt="Mada" loading="lazy">
+    <div class="post-row" onclick="openArtist('yaniss-odua');document.querySelectorAll('.sw-btn').forEach(function(b,i){b.classList.toggle('active',i===1)})" style="cursor:pointer">
+      <img class="post-row-img" id="card-img-yaniss" src="https://i.scdn.co/image/ab6761610000e5eb1b5aa3dee80d6e72fab70519" alt="Yaniss Odua" loading="lazy">
       <div>
-        <div class="pr-cat">Single · 2025</div>
-        <div class="pr-title">« Mada » — hommage reggae à Madagascar</div>
-        <div class="pr-meta">Monstaaa L'Ovni · B2L Records</div>
+        <div class="pr-cat">Reggae Roots · 346K Spotify · 2025</div>
+        <div class="pr-title">Yaniss Odua — « Mon Frère » feat. FNX · Martinique</div>
+        <div class="pr-meta">Baco Records · 120M+ vues YouTube</div>
       </div>
     </div>
-    <div class="post-row">
-      <img class="post-row-img" src="https://raw.githubusercontent.com/apanonsteffane-prog/Monstaaa-portfolio/main/IMG_7352.jpg" onerror="this.src='https://raw.githubusercontent.com/apanonstephane-prog/Monstaaa-portfolio/main/IMG_7352.jpg'" alt="Le Son du Four" loading="lazy">
+    <div class="post-row" onclick="openArtist('busta-rhymes');document.querySelectorAll('.sw-btn').forEach(function(b,i){b.classList.toggle('active',i===1)})" style="cursor:pointer">
+      <img class="post-row-img" id="card-img-busta" src="https://i.scdn.co/image/ab6761610000e5eb38b02d3e4c74bcd18e38cedf" alt="Busta Rhymes" loading="lazy">
       <div>
-        <div class="pr-cat">Single · 2025</div>
-        <div class="pr-title">« Le Son du Four » — trap made in Toulouse</div>
-        <div class="pr-meta">Monstaaa L'Ovni · B2L Records</div>
+        <div class="pr-cat">Hip-Hop · Brooklyn · 12.7M Spotify</div>
+        <div class="pr-title">Busta Rhymes — flow dévastateur, Brooklyn à jamais</div>
+        <div class="pr-meta">Conglomerate Records · depuis 1996</div>
       </div>
     </div>
-    <div class="post-row">
-      <img class="post-row-img" src="https://raw.githubusercontent.com/apanonstephane-prog/Monstaaa-portfolio/main/IMG_9460.JPG" alt="Back From Radikal" loading="lazy">
+    <div class="post-row" onclick="openArtist('sekta');document.querySelectorAll('.sw-btn').forEach(function(b,i){b.classList.toggle('active',i===1)})" style="cursor:pointer">
+      <img class="post-row-img" id="card-img-sekta" src="https://i.scdn.co/image/ab6761610000e5eb7f69a7b83b5c3e7b0d4da47f" alt="SEKTA" loading="lazy">
       <div>
-        <div class="pr-cat">Album</div>
-        <div class="pr-title">Back From Radikal — les bases du son L'Ovni</div>
-        <div class="pr-meta">Monstaaa L'Ovni · B2L Records</div>
+        <div class="pr-cat">Reggae · Dancehall · Lyon · 57K Spotify</div>
+        <div class="pr-title">SEKTA — figure du reggae lyonnais, ETHOS & Killa Sound</div>
+        <div class="pr-meta">ETHOS · Killa Sound Massive · depuis 1999</div>
       </div>
     </div>
   </div>
 
-  <!-- Trending — visible mobile -->
+  <!-- Trending avec vrais artistes -->
   <div class="trending-section">
     <div class="sec-head">Artistes tendance</div>
-    <div class="trending-row" onclick="go('artist',document.querySelectorAll('.sw-btn')[1])">
+    <div class="trending-row" onclick="openArtist('snoop-dogg');document.querySelectorAll('.sw-btn').forEach(function(b,i){b.classList.toggle('active',i===1)})" style="cursor:pointer">
       <div class="tr-rank">1</div>
-      <div class="tr-avatar">M</div>
+      <div class="tr-avatar" style="background:#111;color:#c9a84c;font-size:.7rem">SN</div>
+      <div>
+        <div class="tr-name">Snoop Dogg</div>
+        <div class="tr-genre">West Coast · 32.9M Spotify</div>
+        <div class="tr-badge">◆ Icône mondiale</div>
+      </div>
+    </div>
+    <div class="trending-row" onclick="openArtist('young-thug');document.querySelectorAll('.sw-btn').forEach(function(b,i){b.classList.toggle('active',i===1)})" style="cursor:pointer">
+      <div class="tr-rank">2</div>
+      <div class="tr-avatar" style="background:#111;color:#c9a84c;font-size:.7rem">YT</div>
+      <div>
+        <div class="tr-name">Young Thug</div>
+        <div class="tr-genre">Trap · Atlanta · 29.5M Spotify</div>
+        <div class="tr-badge">▶ UY Scuti — 2025</div>
+      </div>
+    </div>
+    <div class="trending-row" onclick="openArtist('xman');document.querySelectorAll('.sw-btn').forEach(function(b,i){b.classList.toggle('active',i===1)})" style="cursor:pointer">
+      <div class="tr-rank">3</div>
+      <div class="tr-avatar" style="background:#111;color:#c9a84c;font-size:.7rem">XM</div>
+      <div>
+        <div class="tr-name">X-Man</div>
+        <div class="tr-genre">Dancehall · Martinique · 325K Spotify</div>
+        <div class="tr-badge">◆ Prix SACEM 2013</div>
+      </div>
+    </div>
+    <div class="trending-row" onclick="openArtist('monstaaa');document.querySelectorAll('.sw-btn').forEach(function(b,i){b.classList.toggle('active',i===1)})" style="cursor:pointer">
+      <div class="tr-rank">4</div>
+      <div class="tr-avatar" style="background:#111;color:#c9a84c;font-size:.7rem">ML</div>
       <div>
         <div class="tr-name">Monstaaa L'Ovni</div>
         <div class="tr-genre">Hip-Hop · Reggae · Toulouse</div>
-        <div class="tr-badge">▶ Nouveau single</div>
-      </div>
-    </div>
-    <div class="trending-row">
-      <div class="tr-rank">2</div>
-      <div class="tr-avatar">K</div>
-      <div>
-        <div class="tr-name">Kali Rose</div>
-        <div class="tr-genre">Photographie · Paris</div>
-      </div>
-    </div>
-    <div class="trending-row">
-      <div class="tr-rank">3</div>
-      <div class="tr-avatar">D</div>
-      <div>
-        <div class="tr-name">Diego Mart</div>
-        <div class="tr-genre">Street Art · Bordeaux</div>
+        <div class="tr-badge">▶ Juste Une Minute — 2026</div>
       </div>
     </div>
   </div>
 
-  <!-- Releases -->
+  <!-- Sorties récentes -->
   <div class="releases-section">
     <div class="sec-head">Sorties récentes</div>
-    <div class="release-row">
+    <div class="release-row" onclick="openArtist('monstaaa');document.querySelectorAll('.sw-btn').forEach(function(b,i){b.classList.toggle('active',i===1)})" style="cursor:pointer">
       <img class="release-img" src="https://raw.githubusercontent.com/apanonstephane-prog/Monstaaa-portfolio/main/IMG_8517.JPG" alt="Juste Une Minute" loading="lazy">
-      <div><div class="rc-label">Single · 2026</div><div class="rc-title">Juste Une Minute</div><div class="rc-artist">Monstaaa L'Ovni</div></div>
+      <div><div class="rc-label">Single · 2026</div><div class="rc-title">Juste Une Minute</div><div class="rc-artist">Monstaaa L'Ovni · B2L Records</div></div>
     </div>
-    <div class="release-row">
-      <img class="release-img" src="https://raw.githubusercontent.com/apanonstephane-prog/Monstaaa-portfolio/main/IMG_7352.jpg" alt="Le Son du Four" loading="lazy">
-      <div><div class="rc-label">Single · 2025</div><div class="rc-title">Le Son du Four</div><div class="rc-artist">Monstaaa L'Ovni</div></div>
+    <div class="release-row" onclick="openArtist('yaniss-odua');document.querySelectorAll('.sw-btn').forEach(function(b,i){b.classList.toggle('active',i===1)})" style="cursor:pointer">
+      <img class="release-img" id="release-img-yaniss" src="https://i.scdn.co/image/ab6761610000e5eb1b5aa3dee80d6e72fab70519" alt="Yaniss Odua" loading="lazy">
+      <div><div class="rc-label">Single · 2025</div><div class="rc-title">Mon Frère feat. FNX</div><div class="rc-artist">Yaniss Odua · Baco Records</div></div>
     </div>
-    <div class="release-row">
-      <img class="release-img" src="https://raw.githubusercontent.com/apanonstephane-prog/Monstaaa-portfolio/main/IMG_9459.JPG" alt="Mada" loading="lazy">
-      <div><div class="rc-label">Single · 2025</div><div class="rc-title">Mada</div><div class="rc-artist">Monstaaa L'Ovni</div></div>
+    <div class="release-row" onclick="openArtist('young-thug');document.querySelectorAll('.sw-btn').forEach(function(b,i){b.classList.toggle('active',i===1)})" style="cursor:pointer">
+      <img class="release-img" id="release-img-thug" src="https://i.scdn.co/image/ab6761610000e5eb4ce2e2e6c3e08fa73da0740c" alt="Young Thug" loading="lazy">
+      <div><div class="rc-label">Album · 2025</div><div class="rc-title">UY Scuti</div><div class="rc-artist">Young Thug · YSL Records</div></div>
     </div>
   </div>
 
@@ -728,18 +745,28 @@ display:block;
 <div class="l-feed-side">
   <div class="trending-section" style="margin-top:0;border-top:none">
     <div class="sec-head">Artistes tendance</div>
-    <div class="trending-row" onclick="go('artist',document.querySelectorAll('.sw-btn')[1])">
-      <div class="tr-rank">1</div><div class="tr-avatar">M</div>
-      <div><div class="tr-name">Monstaaa L'Ovni</div><div class="tr-genre">Hip-Hop · Reggae</div><div class="tr-badge">▶ Nouveau single</div></div>
+    <div class="trending-row" onclick="openArtist('snoop-dogg');document.querySelectorAll('.sw-btn').forEach(function(b,i){b.classList.toggle('active',i===1)})" style="cursor:pointer">
+      <div class="tr-rank">1</div><div class="tr-avatar" style="background:#111;overflow:hidden;padding:0"><img id="side-img-snoop" src="https://i.scdn.co/image/ab6761610000e5eb5a00969a4698c3132a15336e" style="width:100%;height:100%;object-fit:cover" alt="Snoop"></div>
+      <div><div class="tr-name">Snoop Dogg</div><div class="tr-genre">West Coast · 32.9M</div><div class="tr-badge">◆ Icône</div></div>
     </div>
-    <div class="trending-row"><div class="tr-rank">2</div><div class="tr-avatar">K</div><div><div class="tr-name">Kali Rose</div><div class="tr-genre">Photographie</div></div></div>
-    <div class="trending-row"><div class="tr-rank">3</div><div class="tr-avatar">D</div><div><div class="tr-name">Diego Mart</div><div class="tr-genre">Street Art</div></div></div>
-    <div class="trending-row"><div class="tr-rank">4</div><div class="tr-avatar">S</div><div><div class="tr-name">Séraphine V.</div><div class="tr-genre">Danse contemporaine</div></div></div>
+    <div class="trending-row" onclick="openArtist('booba');document.querySelectorAll('.sw-btn').forEach(function(b,i){b.classList.toggle('active',i===1)})" style="cursor:pointer">
+      <div class="tr-rank">2</div><div class="tr-avatar" style="background:#111;overflow:hidden;padding:0"><img id="side-img-booba" src="https://i.scdn.co/image/ab6761610000e5eba03696716c9ee605006047fd" style="width:100%;height:100%;object-fit:cover" alt="Booba"></div>
+      <div><div class="tr-name">Booba</div><div class="tr-genre">Rap FR · 5M</div><div class="tr-badge">◆ DUC Records</div></div>
+    </div>
+    <div class="trending-row" onclick="openArtist('young-thug');document.querySelectorAll('.sw-btn').forEach(function(b,i){b.classList.toggle('active',i===1)})" style="cursor:pointer">
+      <div class="tr-rank">3</div><div class="tr-avatar" style="background:#111;overflow:hidden;padding:0"><img id="side-img-thug" src="https://i.scdn.co/image/ab6761610000e5eb4ce2e2e6c3e08fa73da0740c" style="width:100%;height:100%;object-fit:cover" alt="YT"></div>
+      <div><div class="tr-name">Young Thug</div><div class="tr-genre">Trap · 29.5M</div><div class="tr-badge">▶ UY Scuti 2025</div></div>
+    </div>
+    <div class="trending-row" onclick="openArtist('monstaaa');document.querySelectorAll('.sw-btn').forEach(function(b,i){b.classList.toggle('active',i===1)})" style="cursor:pointer">
+      <div class="tr-rank">4</div><div class="tr-avatar" style="background:#111;overflow:hidden;padding:0"><img src="https://raw.githubusercontent.com/apanonstephane-prog/Monstaaa-portfolio/main/IMG_9468.jpg" style="width:100%;height:100%;object-fit:cover;object-position:top" alt="Monstaaa"></div>
+      <div><div class="tr-name">Monstaaa L'Ovni</div><div class="tr-genre">Hip-Hop · Toulouse</div><div class="tr-badge">▶ Juste Une Minute</div></div>
+    </div>
   </div>
   <div class="releases-section" style="margin-top:.4rem">
     <div class="sec-head">Sorties récentes</div>
-    <div class="release-row"><img class="release-img" src="https://raw.githubusercontent.com/apanonstephane-prog/Monstaaa-portfolio/main/IMG_8517.JPG" alt="" loading="lazy"><div><div class="rc-label">Single · 2026</div><div class="rc-title">Juste Une Minute</div><div class="rc-artist">Monstaaa L'Ovni</div></div></div>
-    <div class="release-row"><img class="release-img" src="https://raw.githubusercontent.com/apanonstephane-prog/Monstaaa-portfolio/main/IMG_7352.jpg" alt="" loading="lazy"><div><div class="rc-label">Single · 2025</div><div class="rc-title">Le Son du Four</div><div class="rc-artist">Monstaaa L'Ovni</div></div></div>
+    <div class="release-row" style="cursor:pointer" onclick="openArtist('monstaaa');document.querySelectorAll('.sw-btn').forEach(function(b,i){b.classList.toggle('active',i===1)})"><img class="release-img" src="https://raw.githubusercontent.com/apanonstephane-prog/Monstaaa-portfolio/main/IMG_8517.JPG" alt="" loading="lazy"><div><div class="rc-label">Single · 2026</div><div class="rc-title">Juste Une Minute</div><div class="rc-artist">Monstaaa L'Ovni</div></div></div>
+    <div class="release-row" style="cursor:pointer" onclick="openArtist('yaniss-odua');document.querySelectorAll('.sw-btn').forEach(function(b,i){b.classList.toggle('active',i===1)})"><img class="release-img" src="https://i.scdn.co/image/ab6761610000e5eb1b5aa3dee80d6e72fab70519" alt="" loading="lazy"><div><div class="rc-label">Single · 2025</div><div class="rc-title">Mon Frère feat. FNX</div><div class="rc-artist">Yaniss Odua</div></div></div>
+    <div class="release-row" style="cursor:pointer" onclick="openArtist('young-thug');document.querySelectorAll('.sw-btn').forEach(function(b,i){b.classList.toggle('active',i===1)})"><img class="release-img" src="https://i.scdn.co/image/ab6761610000e5eb4ce2e2e6c3e08fa73da0740c" alt="" loading="lazy"><div><div class="rc-label">Album · 2025</div><div class="rc-title">UY Scuti</div><div class="rc-artist">Young Thug</div></div></div>
   </div>
   <div class="cats-section" style="margin-top:.4rem">
     <div class="sec-head">Explorer</div>
@@ -1010,7 +1037,7 @@ function go(id, btn) {
   }
   if (btn) btn.classList.add('active');
   window.scrollTo(0, 0);
-  if (id === 'artist') renderArtists(BEHERE_ARTISTS);
+  if (id === 'artist') { renderArtists(BEHERE_ARTISTS); enrichDirectoryPhotos(); }
 }
 
 function showDirectory() {
@@ -1026,6 +1053,7 @@ function showDirectory() {
   });
   window.scrollTo(0, 0);
   renderArtists(BEHERE_ARTISTS);
+  enrichDirectoryPhotos();
 }
 
 // ─── OPEN ARTIST PAGE ────────────────────────────────────────────────────────
@@ -1256,6 +1284,31 @@ async function enrichArtistYoutube(artistName) {
     var navClips = document.getElementById('nav-clips');
     if (navClips) navClips.style.display = 'inline';
   } catch(e) { console.warn('YouTube error:', e); }
+}
+
+
+// ─── ENRICHISSEMENT PHOTOS GRILLE ────────────────────────────────────────────
+
+async function enrichDirectoryPhotos() {
+  var token = await getSpotifyToken();
+  if (!token) return;
+  var cards = document.querySelectorAll('#dir-grid .dir-card');
+  cards.forEach(function(card) {
+    var artistId = card.getAttribute('onclick').replace("openArtist('", '').replace("')", '');
+    var artist = BEHERE_ARTISTS.find(function(a) { return a.id === artistId; });
+    if (!artist || !artist.spotify_id) return;
+    fetch('https://api.spotify.com/v1/artists/' + artist.spotify_id, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.images && data.images[0]) {
+        var img = card.querySelector('.dir-card-img');
+        if (img) img.src = data.images[0].url;
+      }
+    })
+    .catch(function() {});
+  });
 }
 
 // ─── DONNÉES ARTISTES ────────────────────────────────────────────────────────
@@ -1606,7 +1659,46 @@ function setFilter(f, btn) {
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 
+
+// ─── ENRICHISSEMENT PHOTOS LANDING ────────────────────────────────────────────
+
+async function enrichLandingPhotos() {
+  var token = await getSpotifyToken();
+  if (!token) return;
+  
+  // Map id Spotify → ids d'images dans le DOM à enrichir
+  var targets = [
+    { spotifyId: '72T7x96EAqN2UWvAgobYfv', imgIds: ['card-img-sizzla'] },
+    { spotifyId: '58wXmynHaAWI5hwlPZP3qL', imgIds: ['card-img-booba', 'side-img-booba'] },
+    { spotifyId: '4DIUpxntUKirdKs79Cpjrl', imgIds: ['card-img-yaniss', 'release-img-yaniss'] },
+    { spotifyId: '1YfEcTuGvBQ8xSD1f53UnK', imgIds: ['card-img-busta'] },
+    { spotifyId: '06PMrOCpEXRYONKv8KlLXD', imgIds: ['card-img-sekta'] },
+    { spotifyId: '7hJcb9fa4alzcOq3EaNPoG', imgIds: ['side-img-snoop'] },
+    { spotifyId: '50co4Is1HCEo8bhOyUWKpn', imgIds: ['release-img-thug', 'side-img-thug'] },
+  ];
+
+  targets.forEach(function(t) {
+    fetch('https://api.spotify.com/v1/artists/' + t.spotifyId, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.images && data.images[0]) {
+        var url = data.images[0].url;
+        t.imgIds.forEach(function(imgId) {
+          var el = document.getElementById(imgId);
+          if (el) el.src = url;
+        });
+      }
+    })
+    .catch(function() {});
+  });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+  // Enrichir les images de la landing via Spotify
+  enrichLandingPhotos();
+
   // Filtres landing (.ftag)
   document.querySelectorAll('.ftag').forEach(function(t) {
     t.addEventListener('click', function() {
