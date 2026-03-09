@@ -994,688 +994,637 @@ display:block;
   </footer>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
+// ─── NAVIGATION ─────────────────────────────────────────────────────────────
 
-// Navigation
 function go(id, btn) {
-document.querySelectorAll(’.page’).forEach(p => {
-p.classList.remove(‘active’);
-p.style.display = ‘none’;
-});
-document.querySelectorAll(’.sw-btn’).forEach(b => b.classList.remove(‘active’));
-var target = document.getElementById(id);
-if (target) {
-target.style.display = ‘block’;
-target.classList.add(‘active’);
-}
-if (btn) btn.classList.add(‘active’);
-window.scrollTo(0, 0);
-if (id === ‘artist’) renderArtists(BEHERE_ARTISTS);
+  document.querySelectorAll('.page').forEach(function(p) {
+    p.classList.remove('active');
+    p.style.display = 'none';
+  });
+  document.querySelectorAll('.sw-btn').forEach(function(b) { b.classList.remove('active'); });
+  var target = document.getElementById(id);
+  if (target) {
+    target.style.display = 'block';
+    target.classList.add('active');
+  }
+  if (btn) btn.classList.add('active');
+  window.scrollTo(0, 0);
+  if (id === 'artist') renderArtists(BEHERE_ARTISTS);
 }
 
-// Annuaire
 function showDirectory() {
-document.querySelectorAll(’.page’).forEach(p => {
-p.classList.remove(‘active’);
-p.style.display = ‘none’;
-});
-var dir = document.getElementById(‘artist’);
-dir.style.display = ‘block’;
-dir.classList.add(‘active’);
-document.querySelectorAll(’.sw-btn’).forEach((b,i) => { if(i===1) b.classList.add(‘active’); });
-window.scrollTo(0, 0);
-renderArtists(BEHERE_ARTISTS);
+  document.querySelectorAll('.page').forEach(function(p) {
+    p.classList.remove('active');
+    p.style.display = 'none';
+  });
+  var dir = document.getElementById('artist');
+  dir.style.display = 'block';
+  dir.classList.add('active');
+  document.querySelectorAll('.sw-btn').forEach(function(b, i) {
+    if (i === 1) b.classList.add('active');
+  });
+  window.scrollTo(0, 0);
+  renderArtists(BEHERE_ARTISTS);
 }
+
+// ─── OPEN ARTIST PAGE ────────────────────────────────────────────────────────
 
 function openArtist(id) {
-var a = BEHERE_ARTISTS.find(x => x.id === id);
-if (!a) return;
+  var a = BEHERE_ARTISTS.find(function(x) { return x.id === id; });
+  if (!a) return;
 
-document.querySelectorAll(’.page’).forEach(p => {
-p.classList.remove(‘active’);
-p.style.display = ‘none’;
-});
+  document.querySelectorAll('.page').forEach(function(p) {
+    p.classList.remove('active');
+    p.style.display = 'none';
+  });
 
-if (id === ‘monstaaa’) {
-var ad = document.getElementById(‘artist-detail’);
-ad.style.display = ‘block’;
-ad.classList.add(‘active’);
-window.scrollTo(0, 0);
-return;
+  if (id === 'monstaaa') {
+    var ad = document.getElementById('artist-detail');
+    ad.style.display = 'block';
+    ad.classList.add('active');
+    window.scrollTo(0, 0);
+    return;
+  }
+
+  var ad = document.getElementById('artist-detail');
+  ad.style.display = 'block';
+  ad.classList.add('active');
+
+  var tlHtml = (a.timeline || []).map(function(t) {
+    return '<div class="tl-item"><div class="tl-year">' + t.year + '</div><div>'
+      + '<div class="tl-event">' + t.event + '</div>'
+      + '<div class="tl-loc">' + t.loc + '</div>'
+      + '<div class="tl-desc">' + t.desc + '</div>'
+      + '</div></div>';
+  }).join('');
+
+  var discoHtml = (a.releases || []).map(function(r) {
+    return '<div class="cover-card">'
+      + '<div class="cover-info"><div class="cover-year">' + r.year + ' · ' + r.type + '</div>'
+      + '<div class="cover-title">' + r.title + '</div></div>'
+      + '<div class="cover-player"><iframe src="https://open.spotify.com/embed/track/' + r.spotify_track + '?utm_source=generator"'
+      + ' width="100%" height="80" frameborder="0"'
+      + ' allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"'
+      + ' loading="lazy"></iframe></div></div>';
+  }).join('');
+
+  var clipsHtml = (a.youtube_ids || []).map(function(vid) {
+    return '<div class="clip-card"><div class="clip-wrap">'
+      + '<iframe src="https://www.youtube.com/embed/' + vid + '"'
+      + ' frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"'
+      + ' allowfullscreen loading="lazy"></iframe>'
+      + '</div></div>';
+  }).join('');
+
+  var socHtml = (a.socials || []).map(function(s) {
+    return '<a href="' + s.url + '" target="_blank" class="soc-link"><span>' + s.label + '</span><span>→</span></a>';
+  }).join('');
+
+  var statsHtml = (a.stats || []).map(function(s) {
+    return '<div class="stat"><span class="stat-n">' + s.n + '</span><span class="stat-l">' + s.l + '</span></div>';
+  }).join('');
+
+  ad.innerHTML = ''
+    + '<nav class="anav">'
+    + '<span class="anav-back" onclick="showDirectory()">← Artistes</span>'
+    + '<span class="anav-logo">' + a.name + '</span>'
+    + (a.badge ? '<div class="anav-badge">' + a.badge + '</div>' : '<div></div>')
+    + '</nav>'
+
+    + '<div class="anav-sub">'
+    + '<a href="#a-bio">Bio</a>'
+    + '<a href="#a-parcours">Parcours</a>'
+    + '<a href="#a-musique" id="nav-musique">Musique</a>'
+    + '<a href="#a-clips" id="nav-clips" style="display:' + ((a.youtube_ids||[]).length ? 'inline' : 'none') + '">Clips</a>'
+    + '<a href="#a-contact">Contact</a>'
+    + '</div>'
+
+    + '<section class="a-hero">'
+    + '<img id="artist-hero-img" src="' + a.img + '" alt="' + a.name + '" loading="eager">'
+    + '<div class="a-hero-overlay">'
+    + '<div class="a-hero-tag">' + a.origine + ' · ' + (a.periode || '') + '</div>'
+    + '<h1 class="a-hero-name">' + (a.hero_name || a.name) + '</h1>'
+    + '<p class="a-hero-sub">' + a.genre + (a.label ? ' — ' + a.label : '') + '</p>'
+    + '<div class="a-hero-ctas">'
+    + (a.spotify_id ? '<a href="https://open.spotify.com/artist/' + a.spotify_id + '" target="_blank" class="btn-gold">▶ Spotify</a>' : '')
+    + (a.booking ? '<a href="mailto:' + a.booking + '" class="btn-outline">Booking →</a>' : '')
+    + '</div></div></section>'
+
+    + '<section id="a-bio" class="asec">'
+    + '<div class="sec-label">Artiste</div>'
+    + '<h2 class="sec-title">Qui est <span>' + (a.short_name || a.name) + ' ?</span></h2>'
+    + '<div class="bio-columns">'
+    + '<div class="bio-text">' + (a.bio || '') + '</div>'
+    + '<div>'
+    + (statsHtml ? '<div class="stats">' + statsHtml + '</div>' : '')
+    + (a.spotify_listeners ? '<div class="stats" style="margin-top:.8rem"><div class="stat"><span class="stat-n" id="spotify-listeners">' + a.spotify_listeners + '</span><span class="stat-l">auditeurs/mois Spotify</span></div></div>' : '')
+    + '</div></div></section>'
+
+    + '<section id="a-parcours" class="asec">'
+    + '<div class="sec-label">Historique</div>'
+    + '<h2 class="sec-title">Le <span>Parcours</span></h2>'
+    + '<div class="timeline">' + tlHtml + '</div>'
+    + '</section>'
+
+    + '<section id="a-musique" class="asec">'
+    + '<div class="sec-label">Discographie</div>'
+    + '<h2 class="sec-title">La <span>Musique</span></h2>'
+    + '<div class="covers-grid" id="covers-grid">' + discoHtml + '</div>'
+    + (a.spotify_id ? '<div class="stream-block"><div class="stream-label">Écouter sur les plateformes</div><div class="stream-links"><a href="https://open.spotify.com/artist/' + a.spotify_id + '" target="_blank" class="stream-btn">Spotify</a></div></div>' : '')
+    + '</section>'
+
+    + '<section id="a-clips" class="asec" style="' + (!(a.youtube_ids||[]).length ? 'display:none' : '') + '">'
+    + '<div class="sec-label">Vidéos</div>'
+    + '<h2 class="sec-title">Les <span>Clips</span></h2>'
+    + '<div class="clips-grid" id="clips-grid">' + clipsHtml + '</div>'
+    + '</section>'
+
+    + '<section id="a-contact" class="asec">'
+    + '<div class="sec-label">Booking · Presse · Collabs</div>'
+    + '<h2 class="sec-title">Prendre <span>Contact</span></h2>'
+    + '<div class="contact-columns"><div>'
+    + '<p class="contact-intro">Pour toute demande de booking, collaboration artistique ou presse.</p>'
+    + (a.booking ? '<div class="contact-item"><span class="ci-label">Booking</span><span class="ci-value"><a href="mailto:' + a.booking + '" style="color:#c9a84c">' + a.booking + '</a></span></div>' : '')
+    + (a.label ? '<div class="contact-item"><span class="ci-label">Label</span><span class="ci-value">' + a.label + '</span></div>' : '')
+    + (a.zone ? '<div class="contact-item"><span class="ci-label">Zone</span><span class="ci-value">' + a.zone + '</span></div>' : '')
+    + '</div><div class="soc-col">' + socHtml + '</div></div>'
+    + '</section>'
+
+    + '<div class="behere-bar">'
+    + '<div class="bb-powered"><span style="color:#c9a84c">BeHere</span></div>'
+    + '<a class="bb-cta" onclick="showDirectory()">← Voir tous les artistes</a>'
+    + '</div>'
+
+    + '<footer class="a-footer"><div class="a-footer-inner">'
+    + '<div class="af-logo">' + a.name + '</div>'
+    + '<div class="af-copy">© 2026 · BeHere</div>'
+    + '</div></footer>';
+
+  window.scrollTo(0, 0);
+
+  // Enrichissement API Spotify + YouTube
+  if (a.spotify_id) enrichArtistSpotify(a.spotify_id);
+  if (!(a.youtube_ids || []).length && a.name) enrichArtistYoutube(a.name);
 }
 
-// Génération dynamique de la page artiste
-var ad = document.getElementById(‘artist-detail’);
-ad.style.display = ‘block’;
-ad.classList.add(‘active’);
+// ─── SPOTIFY API ─────────────────────────────────────────────────────────────
 
-// Timeline HTML
-var tlHtml = (a.timeline || []).map(t => ` <div class="tl-item"> <div class="tl-year">${t.year}</div> <div> <div class="tl-event">${t.event}</div> <div class="tl-loc">${t.loc}</div> <div class="tl-desc">${t.desc}</div> </div> </div>`).join(’’);
+var _spotifyToken = null;
+var _spotifyTokenExp = 0;
 
-// Discographie HTML
-var discoHtml = (a.releases || []).map(r => ` <div class="cover-card"> <div class="cover-info"><div class="cover-year">${r.year} · ${r.type}</div><div class="cover-title">${r.title}</div></div> <div class="cover-player"> <iframe src="https://open.spotify.com/embed/track/${r.spotify_track}?utm_source=generator" width="100%" height="80" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe> </div> </div>`).join(’’);
-
-// Clips HTML
-var clipsHtml = (a.youtube_ids || []).map(vid => ` <div class="clip-card"> <div class="clip-wrap"> <iframe src="https://www.youtube.com/embed/${vid}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe> </div> </div>`).join(’’);
-
-// Réseaux sociaux HTML
-var socHtml = (a.socials || []).map(s => ` <a href="${s.url}" target="_blank" class="soc-link"><span>${s.label}</span><span>→</span></a>`).join(’’);
-
-// Stats HTML
-var statsHtml = (a.stats || []).map(s => ` <div class="stat"><span class="stat-n">${s.n}</span><span class="stat-l">${s.l}</span></div>`).join(’’);
-
-ad.innerHTML = `<nav class="anav"> <span class="anav-back" onclick="showDirectory()">← Artistes</span> <span class="anav-logo">${a.name}</span> ${a.badge ?`<div class="anav-badge">${a.badge}</div>` : ‘<div></div>’}
-</nav>
-
-```
-<div class="anav-sub">
-  <a href="#a-bio">Bio</a>
-  <a href="#a-parcours">Parcours</a>
-  ${(a.releases||[]).length ? '<a href="#a-musique">Musique</a>' : ''}
-  ${(a.youtube_ids||[]).length ? '<a href="#a-clips">Clips</a>' : ''}
-  <a href="#a-contact">Contact</a>
-</div>
-
-<section class="a-hero">
-  <img src="${a.img}" alt="${a.name}" loading="eager">
-  <div class="a-hero-overlay">
-    <div class="a-hero-tag">${a.origine} · ${a.periode || ''}</div>
-    <h1 class="a-hero-name">${a.hero_name || a.name}</h1>
-    <p class="a-hero-sub">${a.genre}${a.label ? ' — ' + a.label : ''}</p>
-    <div class="a-hero-ctas">
-      ${a.spotify_id ? `<a href="https://open.spotify.com/artist/${a.spotify_id}" target="_blank" class="btn-gold">▶ Spotify</a>` : ''}
-      ${a.booking ? `<a href="mailto:${a.booking}" class="btn-outline">Booking →</a>` : ''}
-    </div>
-  </div>
-</section>
-
-<section id="a-bio" class="asec">
-  <div class="sec-label">Artiste</div>
-  <h2 class="sec-title">Qui est <span>${a.short_name || a.name} ?</span></h2>
-  <div class="bio-columns">
-    <div class="bio-text">${a.bio || ''}</div>
-    <div>
-      ${statsHtml ? `<div class="stats">${statsHtml}</div>` : ''}
-      ${a.spotify_listeners ? `<div class="stats" style="margin-top:.8rem"><div class="stat"><span class="stat-n">${a.spotify_listeners}</span><span class="stat-l">auditeurs/mois Spotify</span></div></div>` : ''}
-    </div>
-  </div>
-</section>
-
-<section id="a-parcours" class="asec">
-  <div class="sec-label">Historique</div>
-  <h2 class="sec-title">Le <span>Parcours</span></h2>
-  <div class="timeline">${tlHtml}</div>
-</section>
-
-<section id="a-musique" class="asec" ${!(a.releases||[]).length && !a.spotify_id ? 'style="display:none"' : ''}>
-  <div class="sec-label">Discographie</div>
-  <h2 class="sec-title">La <span>Musique</span></h2>
-  <div class="covers-grid">${discoHtml}</div>
-  ${a.spotify_id ? `
-  <div class="stream-block">
-    <div class="stream-label">Écouter sur les plateformes</div>
-    <div class="stream-links">
-      <a href="https://open.spotify.com/artist/${a.spotify_id}" target="_blank" class="stream-btn">Spotify</a>
-    </div>
-  </div>` : ''}
-</section>
-
-<section id="a-clips" class="asec" ${!(a.youtube_ids||[]).length ? 'style="display:none"' : ''}>
-  <div class="sec-label">Vidéos</div>
-  <h2 class="sec-title">Les <span>Clips</span></h2>
-  <div class="clips-grid">${clipsHtml}</div>
-</section>
-
-<section id="a-contact" class="asec">
-  <div class="sec-label">Booking · Presse · Collabs</div>
-  <h2 class="sec-title">Prendre <span>Contact</span></h2>
-  <div class="contact-columns">
-    <div>
-      <p class="contact-intro">Pour toute demande de booking, collaboration artistique ou presse.</p>
-      ${a.booking ? `<div class="contact-item"><span class="ci-label">Booking</span><span class="ci-value"><a href="mailto:${a.booking}" style="color:#c9a84c">${a.booking}</a></span></div>` : ''}
-      ${a.label ? `<div class="contact-item"><span class="ci-label">Label</span><span class="ci-value">${a.label}</span></div>` : ''}
-      ${a.zone ? `<div class="contact-item"><span class="ci-label">Zone</span><span class="ci-value">${a.zone}</span></div>` : ''}
-    </div>
-    <div class="soc-col">${socHtml}</div>
-  </div>
-</section>
-```
-
-`;
-
-window.scrollTo(0, 0);
-
-// Enrichissement Spotify (photo + top tracks)
-if (a.spotify_id) enrichArtistPage(a.spotify_id);
-// Auto-fetch clips YouTube si youtube_ids vide
-if (!(a.youtube_ids||[]).length) enrichArtistClips(a.name, a.spotify_id);
+async function getSpotifyToken() {
+  if (_spotifyToken && Date.now() < _spotifyTokenExp) return _spotifyToken;
+  try {
+    var res = await fetch('https://accounts.spotify.com/api/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Basic ' + btoa('a07ece18d1384dcb8ec6bf9266fefebe:f8f886ddae5942d486f5dbac6f11639e')
+      },
+      body: 'grant_type=client_credentials'
+    });
+    var data = await res.json();
+    _spotifyToken = data.access_token;
+    _spotifyTokenExp = Date.now() + (data.expires_in - 60) * 1000;
+    return _spotifyToken;
+  } catch(e) { return null; }
 }
 
-// ─── DONNÉES ARTISTES ───────────────────────────────────────────────────────
+async function enrichArtistSpotify(artistId) {
+  var token = await getSpotifyToken();
+  if (!token) return;
+
+  // Fetch artist + top tracks en parallèle
+  var [artRes, tracksRes] = await Promise.all([
+    fetch('https://api.spotify.com/v1/artists/' + artistId, { headers: { Authorization: 'Bearer ' + token } }),
+    fetch('https://api.spotify.com/v1/artists/' + artistId + '/top-tracks?market=FR', { headers: { Authorization: 'Bearer ' + token } })
+  ]);
+
+  var artData = await artRes.json();
+  var tracksData = await tracksRes.json();
+
+  // Remplacer la photo hero
+  if (artData.images && artData.images[0]) {
+    var heroImg = document.getElementById('artist-hero-img');
+    if (heroImg) heroImg.src = artData.images[0].url;
+  }
+
+  // Injecter top tracks si covers-grid vide
+  var grid = document.getElementById('covers-grid');
+  if (grid && grid.innerHTML.trim() === '' && tracksData.tracks && tracksData.tracks.length) {
+    grid.innerHTML = tracksData.tracks.slice(0, 6).map(function(t) {
+      var img = (t.album && t.album.images[0]) ? '<img src="' + t.album.images[0].url + '" alt="' + t.name.replace(/"/g,'') + '" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover">' : '';
+      var year = t.album ? t.album.release_date.slice(0,4) : '';
+      var type = t.album ? t.album.album_type : 'Track';
+      return '<div class="cover-card">' + img
+        + '<div class="cover-info"><div class="cover-year">' + year + ' · ' + type + '</div>'
+        + '<div class="cover-title">' + t.name + '</div></div>'
+        + '<div class="cover-player"><iframe src="https://open.spotify.com/embed/track/' + t.id + '?utm_source=generator"'
+        + ' width="100%" height="80" frameborder="0"'
+        + ' allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"'
+        + ' loading="lazy"></iframe></div></div>';
+    }).join('');
+  }
+}
+
+// ─── YOUTUBE API ──────────────────────────────────────────────────────────────
+
+async function enrichArtistYoutube(artistName) {
+  try {
+    var url = 'https://www.googleapis.com/youtube/v3/search'
+      + '?part=snippet&type=video&maxResults=6'
+      + '&q=' + encodeURIComponent(artistName + ' clip officiel')
+      + '&key=AIzaSyD7rIYtvonr6kpjXrCOY8SS_8NP9i883sI';
+    var res = await fetch(url);
+    var data = await res.json();
+    if (!data.items || !data.items.length) return;
+
+    var clipsSec = document.getElementById('a-clips');
+    var clipsGrid = document.getElementById('clips-grid');
+    if (!clipsSec || !clipsGrid) return;
+
+    clipsGrid.innerHTML = data.items.map(function(item) {
+      return '<div class="clip-card"><div class="clip-wrap">'
+        + '<iframe src="https://www.youtube.com/embed/' + item.id.videoId + '"'
+        + ' frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"'
+        + ' allowfullscreen loading="lazy"></iframe>'
+        + '</div></div>';
+    }).join('');
+
+    clipsSec.style.display = '';
+    var navClips = document.getElementById('nav-clips');
+    if (navClips) navClips.style.display = 'inline';
+  } catch(e) { console.warn('YouTube error:', e); }
+}
+
+// ─── DONNÉES ARTISTES ────────────────────────────────────────────────────────
 
 const BEHERE_ARTISTS = [
 
-// ── MONSTAAA L’OVNI ──────────────────────────────────────────────────────
-{
-id:‘monstaaa’, name:“Monstaaa L’Ovni”,
-tag:“Hip-Hop · Reggae · Afrobeat”, ville:“Toulouse”, cat:“musique”,
-img:“https://raw.githubusercontent.com/apanonstephane-prog/Monstaaa-portfolio/main/IMG_9468.jpg”,
-badge:“◆ Vérifié”, label:“B2L Records”,
-tags:[“musique”,“toulouse”,“hip-hop”,“reggae”,“afrobeat”,“dancehall”]
-},
+  // ── MONSTAAA L'OVNI ──────────────────────────────────────────────────────
+  {
+    id:'monstaaa', name:"Monstaaa L'Ovni",
+    tag:"Hip-Hop · Reggae · Afrobeat", ville:"Toulouse", cat:"musique",
+    img:"https://raw.githubusercontent.com/apanonstephane-prog/Monstaaa-portfolio/main/IMG_9468.jpg",
+    badge:"◆ Vérifié", label:"B2L Records",
+    tags:["musique","toulouse","hip-hop","reggae","afrobeat","dancehall"]
+  },
 
-// ── TOXIC’ ───────────────────────────────────────────────────────────────
-{
-id:‘toxic’, name:“TOXIC’”,
-short_name:“TOXIC’”, hero_name:“TOXIC’”,
-tag:“Rap Conscient · Trap · Afrobeat”, ville:“Lyon”, cat:“musique”,
-img:“https://i1.sndcdn.com/avatars-000328641920-8s77ow-t500x500.jpg”,
-badge:“◆ Vérifié”, label:“B2L Records”,
-origine:“Madagascar 🇲🇬”, periode:“Lyon · Toulouse”,
-genre:“Rap Conscient · Trap · Afrobeat”,
-spotify_listeners:null,
-bio:`<p><strong>TOXIC'</strong> (Gary Bissol) est un artiste d'origine malgache, membre du label <strong>B2L Records</strong>.</p> <p>Co-fondateur de <strong>GI.Corp</strong>, structure de production musicale et audiovisuelle, il développe un univers à trois dimensions : rappeur, producteur et entrepreneur.</p> <p>Ses textes philosophiques — références à Berserk, Matrix, conscience sociale — font de lui une voix singulière entre rap conscient, trap et afrobeat.</p>`,
-stats:[{n:“B2L”,l:“Records”},{n:“GI.Corp”,l:“Production”}],
-timeline:[
-{year:“Origines”, event:“Madagascar”, loc:“Île Rouge”, desc:“Origines malgaches, univers musical ancré dans la culture de l’île.”},
-{year:“2015”, event:“B2L Records”, loc:“Lyon · avec Monstaaa”, desc:“Cofondation du label Bande 2 Loups Records avec KDA Films.”},
-{year:“2020”, event:“AbAbA feat. B2L Records”, loc:“B2L Records”, desc:“Collaboration officielle sur le projet collectif du label.”},
-{year:“2024+”, event:“GI.Corp · Byss Communications”, loc:“France”, desc:“Production musicale/audiovisuelle et développement entrepreneurial.”}
-],
-releases:[],
-youtube_ids:[],
-spotify_id:null,
-socials:[
-{label:“SoundCloud”, url:“https://soundcloud.com/gary-bissol”},
-{label:“Instagram”, url:“https://instagram.com/gary_byss”}
-],
-booking:null, zone:“France · International”,
-tags:[“musique”,“lyon”,“rap”,“trap”,“afrobeat”,“conscient”]
-},
+  // ── TOXIC' ───────────────────────────────────────────────────────────────
+  {
+    id:'toxic', name:"TOXIC'", short_name:"TOXIC'", hero_name:"TOXIC'",
+    tag:"Rap Conscient · Trap · Afrobeat", ville:"Lyon", cat:"musique",
+    img:"https://raw.githubusercontent.com/apanonstephane-prog/Monstaaa-portfolio/main/IMG_9462.JPG",
+    badge:null, label:"B2L Records",
+    origine:"Madagascar 🇲🇬", periode:"Lyon · Toulouse",
+    genre:"Rap Conscient · Trap · Afrobeat",
+    spotify_id:null, spotify_listeners:null,
+    bio:'<p><strong>TOXIC\'</strong> (Gary Bissol) est un artiste d\'origine malgache, membre de <em>B2L Records</em> et co-fondateur de <strong>GI.Corp</strong>, structure de production musicale et audiovisuelle.</p><p>Entre rap conscient, trap et afrobeat, ses projets explorent des thèmes profonds portés par une production soignée.</p>',
+    stats:[],
+    timeline:[
+      {year:'2015', event:'B2L Records', loc:'Lyon · avec Monstaaa L\'Ovni', desc:'Co-fondation du label Bande 2 Loups Records.'},
+      {year:'2018', event:'GI.Corp', loc:'Production', desc:'Co-fondation de GI.Corp, structure de production musicale et audiovisuelle.'},
+      {year:'2023', event:'Code Morse feat. Ice J', loc:'B2L Records', desc:'Collaboration marquante sur ce titre.'},
+      {year:'2025', event:'AbAbA feat. B2L Records', loc:'B2L Records', desc:'Nouvelle sortie collective.'}
+    ],
+    releases:[],
+    youtube_ids:[],
+    socials:[
+      {label:'Instagram', url:'https://www.instagram.com/gary_byss'},
+      {label:'SoundCloud', url:'https://soundcloud.com/gary-bissol'}
+    ],
+    booking:'bande2loups@gmail.com',
+    zone:'Lyon · Toulouse · International',
+    tags:["musique","lyon","toulouse","rap","trap","afrobeat"]
+  },
 
-// ── MADNESS ──────────────────────────────────────────────────────────────
-{
-id:‘madness’, name:“MADNESS”,
-short_name:“MADNESS”, hero_name:“MADNESS”,
-tag:“Trap · Hip-Hop”, ville:“Guyane”, cat:“musique”,
-img:“https://instagram.com/p/madness_trapboss_officiel/media/?size=l”,
-badge:null, label:null,
-origine:“Guyane 🇬🇫”, periode:“Guyane · France”,
-genre:“Trap · Hip-Hop”,
-spotify_listeners:null,
-bio:`<p><strong>MADNESS</strong>, alias Trap Boss, est un artiste originaire de <strong>Guyane</strong>.</p> <p>Avec plus de 6 600 abonnés Instagram, il s'impose progressivement comme une voix de la scène trap guyanaise, porté par une énergie scénique brute et un univers authentique.</p>`,
-stats:[{n:“6.6K”,l:“Instagram”},{n:“🇬🇫”,l:“Guyane”}],
-timeline:[
-{year:“Guyane”, event:“Origines”, loc:“Guyane française”, desc:“Artiste ancré dans la réalité de la scène guyanaise.”},
-{year:“Actif”, event:“Trap Boss”, loc:“Instagram · @madness_trapboss_officiel”, desc:“Développement de son univers trap sur les réseaux sociaux.”}
-],
-releases:[], youtube_ids:[],
-spotify_id:null,
-socials:[
-{label:“Instagram”, url:“https://instagram.com/madness_trapboss_officiel”}
-],
-booking:”@gdl_goutdeluxe”, zone:“Guyane · DOM-TOM · France”,
-tags:[“musique”,“guyane”,“trap”,“hip-hop”]
-},
+  // ── MADNESS ──────────────────────────────────────────────────────────────
+  {
+    id:'madness', name:"MADNESS", short_name:"MADNESS", hero_name:"MADNESS",
+    tag:"Trap · Guyane", ville:"Guyane", cat:"musique",
+    img:"https://raw.githubusercontent.com/apanonstephane-prog/Monstaaa-portfolio/main/IMG_9460.JPG",
+    badge:null, label:null,
+    origine:"Guyane 🇬🇫", periode:"",
+    genre:"Trap",
+    spotify_id:null, spotify_listeners:null,
+    bio:'<p><strong>MADNESS</strong> (Trap Boss) est un artiste originaire de <em>Guyane</em>, représentant d\'une scène trap caribéenne en pleine expansion.</p><p>6 600+ abonnés Instagram, un style sans compromis, un booking géré par <strong>@gdl_goutdeluxe</strong>.</p>',
+    stats:[{n:'6.6K', l:'Abonnés Instagram'}],
+    timeline:[],
+    releases:[],
+    youtube_ids:[],
+    socials:[
+      {label:'Instagram', url:'https://www.instagram.com/madness_trapboss_officiel'}
+    ],
+    booking:null,
+    zone:'Guyane · Antilles · France',
+    tags:["musique","guyane","trap"]
+  },
 
-// ── SEKTA ────────────────────────────────────────────────────────────────
-{
-id:‘sekta’, name:“SEKTA”,
-short_name:“SEKTA”, hero_name:“SEKTA”,
-tag:“Reggae · Dancehall · Urban”, ville:“Lyon”, cat:“musique”,
-img:“https://alliancemusik.com/wp-content/uploads/2019/07/Sekta-tout-roule-bebe.jpg”,
-badge:“◆ Vérifié”, label:null,
-origine:“Lyon 🇫🇷”, periode:“20+ ans de scène”,
-genre:“Reggae Roots · Dancehall · Urbain”,
-spotify_id:“06PMrOCpEXRYONKv8KlLXD”,
-spotify_listeners:“57K”,
-bio:`<p><strong>SEKTA</strong> (Ekoun Sekta) est une figure incontournable de la scène reggae/dancehall lyonnaise.</p> <p>Membre fondateur du groupe <strong>ETHOS</strong> et du sound system <strong>Killa Sound Massive</strong>, il cumule plus de 20 ans de carrière avec des premières parties de Buju Banton, Admiral T, Sniper et Lino.</p> <p>Son univers : reggae roots, dancehall et sonorités urbaines, porté par un charisme scénique reconnu.</p>`,
-stats:[{n:“20+”,l:“Ans carrière”},{n:“57K”,l:“Spotify/mois”}],
-timeline:[
-{year:“1999+”, event:“Killa Sound Massive”, loc:“Lyon · Rhône-Alpes”, desc:“Intègre le sound system fondé en 1999, référence reggae/dancehall de Lyon.”},
-{year:“2000s”, event:“Groupe ETHOS”, loc:“Lyon”, desc:“Membre fondateur du collectif ETHOS.”},
-{year:“2013”, event:“Fête de la Musique”, loc:“Lyon · Parc Roquette”, desc:“Même affiche que Sekel Block — connexion B2L Records.”},
-{year:“2024”, event:“Concert La Marquise”, loc:“Lyon 3 · Péniche”, desc:“Spécial guest aux côtés de Ralf Hartmann & Martony Groove.”},
-{year:“Actif”, event:“Partout c’est la même”, loc:“Single · seKTa”, desc:“57K auditeurs mensuels sur Spotify.”}
-],
-releases:[
-{year:“Single”, type:“Reggae”, title:“Partout c’est la même”, spotify_track:“3PyiblzksigeGihHOn8byg”},
-],
-youtube_ids:[],
-socials:[
-{label:“Spotify”, url:“https://open.spotify.com/artist/06PMrOCpEXRYONKv8KlLXD”},
-{label:“Instagram”, url:“https://instagram.com/sekta_officiel”},
-{label:“SoundCloud”, url:“https://soundcloud.com/sekta”}
-],
-booking:null, zone:“Lyon · France”,
-tags:[“musique”,“lyon”,“reggae”,“dancehall”]
-},
+  // ── SEKTA ────────────────────────────────────────────────────────────────
+  {
+    id:'sekta', name:"SEKTA", short_name:"SEKTA", hero_name:"SEKTA",
+    tag:"Reggae · Dancehall · Lyon", ville:"Lyon", cat:"musique",
+    img:"https://raw.githubusercontent.com/apanonstephane-prog/Monstaaa-portfolio/main/IMG_4101.JPG",
+    badge:null, label:"ETHOS",
+    origine:"Lyon 🇫🇷", periode:"2000 — aujourd'hui",
+    genre:"Reggae · Dancehall · Roots",
+    spotify_id:"06PMrOCpEXRYONKv8KlLXD", spotify_listeners:"57K",
+    bio:'<p><strong>SEKTA</strong> (Ekoun Sekta) est une figure incontournable de la scène reggae/dancehall lyonnaise. Membre fondateur d\'<em>ETHOS</em> et du <strong>Killa Sound Massive</strong> (sound system créé en 1999), il représente plus de 20 ans d\'engagement musical.</p><p>Premières parties de Buju Banton, Admiral T, Sniper, Lino, Busta Flex... Sa présence scénique et son authenticité roots lui valent une solide réputation au-delà de Lyon.</p>',
+    stats:[{n:'57K', l:'Auditeurs Spotify'},{n:'20+', l:'Ans de scène'},{n:'1999', l:'Killa Sound Massive'}],
+    timeline:[
+      {year:'1999', event:'Killa Sound Massive', loc:'Lyon', desc:'Création du sound system avec la crew.'},
+      {year:'2000', event:'Émergence scène lyonnaise', loc:'Lyon · Reggae/Dancehall', desc:'Débuts sur la scène reggae-dancehall de Lyon.'},
+      {year:'2013', event:'Fête de la Musique Lyon', loc:'Lyon', desc:'Même affiche que Sekel Block (Monstaaa L\'Ovni).'},
+      {year:'2015', event:'ETHOS', loc:'Lyon', desc:'Membre fondateur du collectif ETHOS.'},
+      {year:'2024', event:'Partout c\'est la même', loc:'Spotify', desc:'Single disponible sur toutes les plateformes.'}
+    ],
+    releases:[
+      {year:'2024', type:'Single', title:"Partout c'est la même", spotify_track:'3PyiblzksigeGihHOn8byg'}
+    ],
+    youtube_ids:[],
+    socials:[
+      {label:'Instagram', url:'https://www.instagram.com/sekta_officiel'},
+      {label:'SoundCloud', url:'https://soundcloud.com/sekta'},
+      {label:'Spotify', url:'https://open.spotify.com/artist/06PMrOCpEXRYONKv8KlLXD'}
+    ],
+    booking:null,
+    zone:'Lyon · Rhône-Alpes · France · International',
+    tags:["musique","lyon","reggae","dancehall","roots"]
+  },
 
-// ── X-MAN ────────────────────────────────────────────────────────────────
-{
-id:‘xman’, name:“X-Man”,
-short_name:“X-Man”, hero_name:“X-Man”,
-tag:“Dancehall · Reggae · Trap”, ville:“Martinique”, cat:“musique”,
-img:“https://i.scdn.co/image/ab6761610000e5eba5e4f7df4d3f4e4e2e3e2e3e”,
-badge:“◆ Vérifié”, label:“Tônôp Music”,
-origine:“Fort-de-France, Martinique 🇲🇶”, periode:“Depuis 2011”,
-genre:“Dancehall · Reggae · Trap”,
-spotify_id:“4VYr2jD1AzhmEyT2L8xTg4”,
-spotify_listeners:“325K”,
-bio:`<p><strong>X-Man</strong> (Edmond-Mariette Xavier), né le 9 novembre 1984 à Fort-de-France, est l'une des figures majeures du dancehall/reggae antillais.</p> <p>Fondateur de son propre label <strong>Tônôp Music</strong> en 2015, lauréat du <strong>Prix Spécial SACEM 2013</strong>, il s'impose avec des hits comme <em>Le P'tit Jeu</em>, <em>Welcome to Madinina</em> et <em>Saturday Night</em> (Top 149 France, 2014).</p> <p>Ses collaborations avec Admiral T, Kalash, Teeyah et Konshens confirment son statut de pont entre les Antilles et la scène internationale.</p>`,
-stats:[{n:“325K”,l:“Spotify/mois”},{n:“2013”,l:“Prix SACEM”}],
-timeline:[
-{year:“1984”, event:“Naissance”, loc:“Fort-de-France, Martinique”, desc:“Origines martiniquaises, berceau de son univers dancehall.”},
-{year:“2011”, event:“Atypique”, loc:“Martinique”, desc:“Premier album, pose les bases de son style dancehall/reggae.”},
-{year:“2013”, event:“Prix Spécial SACEM”, loc:“France”, desc:“Reconnaissance nationale de son travail artistique.”},
-{year:“2014”, event:“Saturday Night”, loc:“Top 149 France”, desc:“Album en top charts français — percée nationale.”},
-{year:“2015”, event:“Tônôp Music”, loc:“Label indépendant”, desc:“Fondation de son propre label, indépendance totale.”},
-{year:“2023”, event:“Shatta Shark · Coco”, loc:“Singles”, desc:“Maintient une activité discographique régulière.”}
-],
-releases:[],
-youtube_ids:[],
-spotify_id:“4VYr2jD1AzhmEyT2L8xTg4”,
-socials:[
-{label:“Spotify”, url:“https://open.spotify.com/artist/4VYr2jD1AzhmEyT2L8xTg4”}
-],
-booking:null, zone:“Antilles · France · International”,
-tags:[“musique”,“martinique”,“dancehall”,“reggae”,“trap”]
-},
+  // ── X-MAN ────────────────────────────────────────────────────────────────
+  {
+    id:'xman', name:"X-Man", short_name:"X-Man", hero_name:"X-Man",
+    tag:"Dancehall · Reggae · Martinique", ville:"Martinique", cat:"musique",
+    img:"https://raw.githubusercontent.com/apanonstephane-prog/Monstaaa-portfolio/main/IMG_9463.JPG",
+    badge:null, label:"Tônôp Music",
+    origine:"Martinique 🇲🇶", periode:"2011 — aujourd'hui",
+    genre:"Dancehall · Reggae · Afrobeats",
+    spotify_id:"4VYr2jD1AzhmEyT2L8xTg4", spotify_listeners:"325K",
+    bio:'<p><strong>X-Man</strong> (Xavier Edmond-Mariette) est né le 9 novembre 1984 à Fort-de-France, Martinique. Artiste dancehall/reggae majeur des Antilles françaises, il fonde son propre label <em>Tônôp Music</em> en 2015.</p><p>Prix Spécial SACEM 2013, album <em>Saturday Night</em> (2014) classé Top 149 France. Ses singles récents <em>Coco</em> et <em>Shatta Shark</em> (2023) confirment son ancrage.</p>',
+    stats:[{n:'325K', l:'Auditeurs Spotify'},{n:'2013', l:'Prix SACEM'},{n:'Top 149', l:'France Album'}],
+    timeline:[
+      {year:'2011', event:'Atypique', loc:'Martinique', desc:'Premier album, bases du son X-Man.'},
+      {year:'2013', event:'Prix Spécial SACEM', loc:'Paris', desc:'Reconnaissance nationale pour son parcours.'},
+      {year:'2014', event:'Saturday Night', loc:'Top 149 France', desc:'Album charté en France.'},
+      {year:'2015', event:'Tônôp Music', loc:'Martinique', desc:'Création de son propre label indépendant.'},
+      {year:'2023', event:'Coco · Shatta Shark', loc:'Tônôp Music', desc:'Nouvelles sorties confirmant sa place sur la scène afro-caribéenne.'}
+    ],
+    releases:[],
+    youtube_ids:[],
+    socials:[
+      {label:'Spotify', url:'https://open.spotify.com/artist/4VYr2jD1AzhmEyT2L8xTg4'}
+    ],
+    booking:null,
+    zone:'Martinique · Antilles · France · International',
+    tags:["musique","martinique","dancehall","reggae","afrobeats","antilles"]
+  },
 
-// ── YANISS ODUA ──────────────────────────────────────────────────────────
-{
-id:‘yaniss-odua’, name:“Yaniss Odua”,
-short_name:“Yaniss”, hero_name:“Yaniss<br><span>Odua</span>”,
-tag:“Reggae Roots · Dancehall · Futu’Roots”, ville:“Martinique”, cat:“musique”,
-img:“https://bacomusic.fr/wp-content/uploads/2024/09/yaniss-odua-photo-presse-2024.jpg”,
-badge:“◆ Vérifié”, label:“Baco Records”,
-origine:“Martinique 🇲🇶”, periode:“30 ans de carrière”,
-genre:“Reggae Roots · Dancehall · Futu’Roots”,
-spotify_id:“4DIUpxntUKirdKs79Cpjrl”,
-spotify_listeners:“346K”,
-bio:`<p><strong>Yaniss Odua</strong>, né en 1978 en Martinique, est l'une des figures majeures du reggae francophone avec près de 30 ans de carrière.</p> <p>Ses titres phares — <em>La Caraïbe</em>, <em>Rouge Jaune Vert</em>, <em>Chalawa</em> — cumulent plus de 120 millions de vues sur YouTube et ont marqué plusieurs générations.</p> <p>Signé chez <strong>Baco Records</strong>, il a collaboré avec Ky-Mani Marley, Tiken Jah Fakoly, Danakil, Dub Inc, Kalash et Keny Arkana. Son album <em>Mon Frère</em> avec FNX est sorti en juin 2025.</p>`,
-stats:[{n:“346K”,l:“Spotify/mois”},{n:“120M+”,l:“Vues YouTube”},{n:“30”,l:“Ans carrière”}],
-timeline:[
-{year:“1978”, event:“Naissance”, loc:“Martinique”, desc:“Origines caribéennes, commence à chanter à 10 ans aux côtés de son cousin Daddy Harry.”},
-{year:“1992”, event:“Little Yaniss”, loc:“Martinique · 1er album”, desc:“Premier album à seulement 13 ans. Présentateur de Ragga’zine sur RFO.”},
-{year:“2002”, event:“Yon Pa Yon”, loc:“Paris · Sony Music”, desc:“Album nommé aux Victoires de la Musique 2003. La Caraïbe devient un classique.”},
-{year:“2013”, event:“Moment Idéal”, loc:“Rouge Jaune Vert · Chalawa”, desc:“Ses deux plus grands hits. 120M+ vues cumulées sur YouTube.”},
-{year:“2017”, event:“Nouvelle Donne”, loc:“Baco Records”, desc:“Album engagé avec le titre Refugee — salué par la critique internationale.”},
-{year:“2022”, event:“Stay High”, loc:“Baco Records · Clive Hunt”, desc:“Enregistré entre France et Jamaïque au légendaire Mixing Lab Studio.”},
-{year:“2025”, event:“Mon Frère (avec FNX)”, loc:“Baco Records”, desc:“Collaboration intergénérationnelle avec FNX, 19 ans. Enregistré à Kingston.”}
-],
-releases:[],
-youtube_ids:[],
-spotify_id:“4DIUpxntUKirdKs79Cpjrl”,
-socials:[
-{label:“Spotify”, url:“https://open.spotify.com/artist/4DIUpxntUKirdKs79Cpjrl”},
-{label:“Instagram”, url:“https://instagram.com/yanissodua”},
-{label:“Facebook”, url:“https://facebook.com/yanissodua”}
-],
-booking:null, zone:“France · Antilles · International”,
-tags:[“musique”,“martinique”,“reggae”,“dancehall”,“roots”]
-},
+  // ── YANISS ODUA ──────────────────────────────────────────────────────────
+  {
+    id:'yaniss-odua', name:"Yaniss Odua", short_name:"Yaniss Odua", hero_name:"Yaniss Odua",
+    tag:"Reggae Roots · Martinique", ville:"Martinique", cat:"musique",
+    img:"https://raw.githubusercontent.com/apanonstephane-prog/Monstaaa-portfolio/main/IMG_9459.JPG",
+    badge:null, label:"Baco Records",
+    origine:"Martinique 🇲🇶", periode:"2002 — aujourd'hui",
+    genre:"Reggae Roots · Conscious",
+    spotify_id:"4DIUpxntUKirdKs79Cpjrl", spotify_listeners:"346K",
+    bio:'<p><strong>Yaniss Odua</strong> est né en 1978 en Martinique. Figure majeure du reggae roots francophone, il signe chez <em>Baco Records</em> et accumule plus de 120 millions de vues YouTube sur ses titres cultes.</p><p>Nommé aux <strong>Victoires de la Musique 2003</strong> dès son premier album, il enchaîne les projets avec une cohérence artistique rare. En juin 2025, il sort <em>Mon Frère</em> en collaboration avec FNX.</p>',
+    stats:[{n:'346K', l:'Auditeurs Spotify'},{n:'120M+', l:'Vues YouTube'},{n:'Victoires', l:'de la Musique 2003'}],
+    timeline:[
+      {year:'2002', event:'Yon Pa Yon', loc:'Baco Records', desc:'Premier album, nomination aux Victoires de la Musique 2003.'},
+      {year:'2013', event:'Moment Idéal', loc:'Baco Records', desc:'Album confirmant son statut de figure du reggae FR.'},
+      {year:'2017', event:'Nouvelle Donne', loc:'Baco Records', desc:'Troisième album studio.'},
+      {year:'2022', event:'Stay High', loc:'Baco Records', desc:'Dernier album solo avant 2025.'},
+      {year:'2025', event:'Mon Frère feat. FNX', loc:'Baco Records', desc:'Collaboration avec FNX, sortie juin 2025.'}
+    ],
+    releases:[],
+    youtube_ids:[],
+    socials:[
+      {label:'Instagram', url:'https://www.instagram.com/yanissodua'},
+      {label:'Spotify', url:'https://open.spotify.com/artist/4DIUpxntUKirdKs79Cpjrl'}
+    ],
+    booking:null,
+    zone:'Martinique · France · International',
+    tags:["musique","martinique","reggae","roots","antilles"]
+  },
 
-// ── SIZZLA ───────────────────────────────────────────────────────────────
-{
-id:‘sizzla’, name:“Sizzla”,
-short_name:“Sizzla”, hero_name:“Sizzla<br><span>Kalonji</span>”,
-tag:“Reggae Roots · Dancehall · Bobo Ashanti”, ville:“Jamaïque”, cat:“musique”,
-img:“https://i.scdn.co/image/ab6761610000e5eb4e3facd5b5e4a78e6e6e6e6e”,
-badge:“◆ Légende”, label:“Xterminator Productions”,
-origine:“Kingston, Jamaïque 🇯🇲”, periode:“Depuis 1995”,
-genre:“Reggae Roots · Dancehall · Roots Revival”,
-spotify_id:“72T7x96EAqN2UWvAgobYfv”,
-spotify_listeners:“1.3M”,
-bio:`<p><strong>Sizzla Kalonji</strong> (Miguel Orlando Collins), né le 17 avril 1976 à Annotto Bay, Jamaïque, est l'un des artistes reggae les plus prolifiques et influents de sa génération.</p> <p>Adepte de l'ordre <strong>Bobo Ashanti</strong>, il forge son style dans les sound systems de Kingston avant de s'imposer mondialement avec <em>Black Woman & Child</em> (1997), album devenu culte nominé aux MOBO Awards.</p> <p>Avec plus de 50 albums à son actif, il reste une référence absolue du reggae conscient et militant.</p>`,
-stats:[{n:“1.3M”,l:“Spotify/mois”},{n:“50+”,l:“Albums”},{n:“1976”,l:“Né”}],
-timeline:[
-{year:“1976”, event:“Naissance”, loc:“Annotto Bay, Jamaïque”, desc:“Grandi dans la communauté de August Town, Kingston. Parents rastafaris dévoués.”},
-{year:“1995”, event:“Burning Up”, loc:“1er album”, desc:“Débuts aux côtés de Bobby Digital. Tournée avec Luciano.”},
-{year:“1996”, event:“Xterminator Records”, loc:“Kingston”, desc:“Rencontre décisive avec Phillip Fattis Burrel — début d’une longue collaboration.”},
-{year:“1997”, event:“Black Woman & Child”, loc:“Album culte”, desc:“Numéro 1 en Jamaïque. Nomination MOBO Awards meilleur artiste reggae international.”},
-{year:“2007”, event:“Reggae Compassionate Act”, loc:“International”, desc:“Signature de l’acte d’engagement pour la tolérance et le respect.”},
-{year:“Actif”, event:“Royal Son of Ethiopia”, loc:“2024 · VP Records”, desc:“Toujours actif après 30 ans de carrière — plus de 50 albums au total.”}
-],
-releases:[],
-youtube_ids:[],
-spotify_id:“72T7x96EAqN2UWvAgobYfv”,
-socials:[
-{label:“Spotify”, url:“https://open.spotify.com/artist/72T7x96EAqN2UWvAgobYfv”}
-],
-booking:null, zone:“Jamaïque · Monde”,
-tags:[“musique”,“jamaique”,“reggae”,“dancehall”,“roots”]
-},
+  // ── SIZZLA ───────────────────────────────────────────────────────────────
+  {
+    id:'sizzla', name:"Sizzla", short_name:"Sizzla", hero_name:"Sizzla",
+    tag:"Reggae · Roots · Conscious · Jamaïque", ville:"Jamaïque", cat:"musique",
+    img:"https://raw.githubusercontent.com/apanonstephane-prog/Monstaaa-portfolio/main/IMG_9456.JPG",
+    badge:"◆ Légende", label:"Xterminator Productions",
+    origine:"Jamaïque 🇯🇲", periode:"1995 — aujourd'hui",
+    genre:"Reggae Roots · Dancehall · Conscious",
+    spotify_id:"72T7x96EAqN2UWvAgobYfv", spotify_listeners:"1.3M",
+    bio:'<p><strong>Sizzla</strong> (Miguel Orlando Collins) est né le 17 avril 1976 à Annotto Bay, Jamaïque. Avec plus de 50 albums, il est l\'une des figures les plus prolifiques et influentes du reggae mondial.</p><p>Ses albums cultes <em>Praise Ye Jah</em> (1997) et <em>Black Woman & Child</em> (1997) restent des références absolues du reggae roots. Membre de la Bobo Ashanti, sa spiritualité Rastafari imprègne chaque production.</p>',
+    stats:[{n:'1.3M', l:'Auditeurs Spotify'},{n:'50+', l:'Albums'},{n:'1976', l:'Jamaïque'}],
+    timeline:[
+      {year:'1995', event:'Burning Up', loc:'Xterminator Productions', desc:'Premier album, irruption sur la scène reggae internationale.'},
+      {year:'1997', event:'Praise Ye Jah', loc:'VP Records', desc:'Album culte qui pose les bases du son Sizzla.'},
+      {year:'1997', event:'Black Woman & Child', loc:'Greensleeves', desc:'Chef-d\'oeuvre absolu du reggae roots, référence mondiale.'},
+      {year:'2000s', event:'Prolificité record', loc:'Jamaïque · International', desc:'Enchaîne les albums à un rythme rare dans l\'histoire du reggae.'},
+      {year:'2024', event:'Actif', loc:'Worldwide', desc:'Toujours en tournée et en studio.'}
+    ],
+    releases:[],
+    youtube_ids:[],
+    socials:[
+      {label:'Spotify', url:'https://open.spotify.com/artist/72T7x96EAqN2UWvAgobYfv'}
+    ],
+    booking:null,
+    zone:'Jamaïque · International',
+    tags:["musique","jamaique","reggae","roots","conscious","dancehall"]
+  },
 
-// ── BUSTA RHYMES ─────────────────────────────────────────────────────────
-{
-id:‘busta-rhymes’, name:“Busta Rhymes”,
-short_name:“Busta”, hero_name:“Busta<br><span>Rhymes</span>”,
-tag:“Hip-Hop · East Coast · Rap”, ville:“New York”, cat:“musique”,
-img:“https://i.scdn.co/image/ab6761610000e5eb7b7b7b7b7b7b7b7b7b7b7b7”,
-badge:“◆ Légende”, label:“Conglomerate Records”,
-origine:“Brooklyn, New York 🇺🇸”, periode:“Depuis 1992”,
-genre:“Hip-Hop · East Coast · Rap”,
-spotify_id:“1YfEcTuGvBQ8xSD1f53UnK”,
-spotify_listeners:“12.7M”,
-bio:`<p><strong>Busta Rhymes</strong> (Trevor Tahiem Smith Jr.), né le 20 mai 1972 à Brooklyn, est une légende du hip-hop East Coast reconnu pour son flow ultra-rapide et son énergie scénique explosive.</p> <p>Révélé avec Leaders of the New School, il enchaîne les albums solo depuis <em>The Coming</em> (1996), avec des hits comme <em>Put Your Hands Where My Eyes Could See</em>, <em>Break Ya Neck</em> et <em>Look at Me Now</em> feat. Chris Brown & Lil Wayne.</p>`,
-stats:[{n:“12.7M”,l:“Spotify/mois”},{n:“1972”,l:“Né à Brooklyn”},{n:“30+”,l:“Ans carrière”}],
-timeline:[
-{year:“1972”, event:“Naissance”, loc:“Brooklyn, New York”, desc:“Grandi à East Flatbush. Découvre le hip-hop très tôt.”},
-{year:“1992”, event:“Leaders of the New School”, loc:“New York”, desc:“Percée avec le groupe — recognised pour son flow unique.”},
-{year:“1996”, event:“The Coming”, loc:“Elektra Records”, desc:“Album solo — classique du hip-hop East Coast.”},
-{year:“1997”, event:“When Disaster Strikes”, loc:“Elektra Records”, desc:“Consolide son statut. Put Your Hands Where My Eyes Could See.”},
-{year:“1998”, event:“Extinction Level Event”, loc:“Elektra Records”, desc:“Album phare de sa carrière.”},
-{year:“2020”, event:“Extinction Level Event 2”, loc:“Conglomerate Records”, desc:“Retour acclamé avec Travis Scott, Anderson .Paak, Kendrick Lamar.”}
-],
-releases:[],
-youtube_ids:[],
-spotify_id:“1YfEcTuGvBQ8xSD1f53UnK”,
-socials:[
-{label:“Spotify”, url:“https://open.spotify.com/artist/1YfEcTuGvBQ8xSD1f53UnK”}
-],
-booking:null, zone:“USA · Monde”,
-tags:[“musique”,“new york”,“hip-hop”,“rap”,“east coast”]
-},
+  // ── BUSTA RHYMES ─────────────────────────────────────────────────────────
+  {
+    id:'busta-rhymes', name:"Busta Rhymes", short_name:"Busta Rhymes", hero_name:"Busta Rhymes",
+    tag:"Hip-Hop · Brooklyn · Légende", ville:"New York", cat:"musique",
+    img:"https://raw.githubusercontent.com/apanonstephane-prog/Monstaaa-portfolio/main/IMG_7352.jpg",
+    badge:"◆ Légende", label:"Conglomerate Records",
+    origine:"Brooklyn, NY 🇺🇸", periode:"1992 — aujourd'hui",
+    genre:"Hip-Hop · East Coast · Boom Bap",
+    spotify_id:"1YfEcTuGvBQ8xSD1f53UnK", spotify_listeners:"12.7M",
+    bio:'<p><strong>Busta Rhymes</strong> (Trevor Tahiem Smith Jr.) est né le 20 mai 1972 à Brooklyn, New York. MC légendaire reconnu pour son flow ultra-rapide, son énergie scénique explosive et ses albums cultes.</p><p>Du groupe <em>Leaders of the New School</em> à sa carrière solo avec <em>The Coming</em> (1996), <em>Extinction Level Event</em> (1998) jusqu\'à <em>ELE2</em> (2020), il reste une référence absolue du hip-hop.</p>',
+    stats:[{n:'12.7M', l:'Auditeurs Spotify'},{n:'10+', l:'Albums Solo'},{n:'1972', l:'Brooklyn, NY'}],
+    timeline:[
+      {year:'1992', event:'Leaders of the New School', loc:'Brooklyn', desc:'Premiers pas en groupe avec un flow déjà dévastateur.'},
+      {year:'1996', event:'The Coming', loc:'Elektra Records', desc:'Premier album solo, explosion mondiale.'},
+      {year:'1997', event:'When Disaster Strikes', loc:'Elektra', desc:'Confirme son statut de MC d\'élite.'},
+      {year:'1998', event:'Extinction Level Event', loc:'Elektra', desc:'Classique absolu du boom bap.'},
+      {year:'2020', event:'ELE2: The Wrath of God', loc:'Conglomerate', desc:'Retour triomphal après des années d\'attente.'}
+    ],
+    releases:[],
+    youtube_ids:[],
+    socials:[
+      {label:'Spotify', url:'https://open.spotify.com/artist/1YfEcTuGvBQ8xSD1f53UnK'}
+    ],
+    booking:null,
+    zone:'New York · International',
+    tags:["musique","new york","hip-hop","rap","east coast"]
+  },
 
-// ── SNOOP DOGG ───────────────────────────────────────────────────────────
-{
-id:‘snoop-dogg’, name:“Snoop Dogg”,
-short_name:“Snoop”, hero_name:“Snoop<br><span>Dogg</span>”,
-tag:“West Coast · G-Funk · Hip-Hop”, ville:“Long Beach, CA”, cat:“musique”,
-img:“https://i.scdn.co/image/ab6761610000e5eb8c8c8c8c8c8c8c8c8c8c8c8”,
-badge:“◆ Légende”, label:“Doggystyle Records”,
-origine:“Long Beach, Californie 🇺🇸”, periode:“Depuis 1992”,
-genre:“West Coast Hip-Hop · G-Funk”,
-spotify_id:“7hJcb9fa4alzcOq3EaNPoG”,
-spotify_listeners:“32.9M”,
-bio:`<p><strong>Snoop Dogg</strong> (Calvin Cordozar Broadus Jr.), né le 20 octobre 1971 à Long Beach, est une icône mondiale du hip-hop West Coast et du G-funk.</p> <p>Découvert par Dr. Dre, il explose avec <em>Doggystyle</em> (1993), l'un des albums de rap les plus vendus de l'histoire. Son style cool, son flow inimitable et sa présence médiatique en font l'une des figures les plus reconnues de la culture hip-hop planétaire.</p>`,
-stats:[{n:“32.9M”,l:“Spotify/mois”},{n:“1971”,l:“Né”},{n:“1993”,l:“Doggystyle”}],
-timeline:[
-{year:“1971”, event:“Naissance”, loc:“Long Beach, Californie”, desc:“Grandi à Long Beach. Se fait appeler Snoop depuis l’enfance.”},
-{year:“1992”, event:“Découverte par Dr. Dre”, loc:“Death Row Records”, desc:“Apparition sur The Chronic — révélation immédiate.”},
-{year:“1993”, event:“Doggystyle”, loc:“Death Row Records”, desc:“Album de rap le plus vendu de l’histoire à sa sortie. Gin and Juice, Who Am I?.”},
-{year:“2004”, event:“Drop It Like It’s Hot”, loc:“Geffen Records”, desc:“Avec Pharrell — numéro 1 aux USA.”},
-{year:“2024”, event:“Porte-flambeau JO Paris”, loc:“Paris”, desc:“Commentateur officiel et ambassadeur des JO 2024 à Paris.”}
-],
-releases:[],
-youtube_ids:[],
-spotify_id:“7hJcb9fa4alzcOq3EaNPoG”,
-socials:[
-{label:“Spotify”, url:“https://open.spotify.com/artist/7hJcb9fa4alzcOq3EaNPoG”}
-],
-booking:null, zone:“USA · Monde”,
-tags:[“musique”,“california”,“hip-hop”,“rap”,“west coast”,“g-funk”]
-},
+  // ── SNOOP DOGG ───────────────────────────────────────────────────────────
+  {
+    id:'snoop-dogg', name:"Snoop Dogg", short_name:"Snoop Dogg", hero_name:"Snoop Dogg",
+    tag:"West Coast · Hip-Hop · Icône", ville:"Long Beach, CA", cat:"musique",
+    img:"https://raw.githubusercontent.com/apanonstephane-prog/Monstaaa-portfolio/main/IMG_9461.JPG",
+    badge:"◆ Icône", label:"Doggystyle Records",
+    origine:"Long Beach, CA 🇺🇸", periode:"1993 — aujourd'hui",
+    genre:"West Coast · G-Funk · Hip-Hop",
+    spotify_id:"7hJcb9fa4alzcOq3EaNPoG", spotify_listeners:"32.9M",
+    bio:'<p><strong>Snoop Dogg</strong> (Calvin Cordozar Broadus Jr.) est né le 20 octobre 1971 à Long Beach, Californie. Icône absolue du West Coast, il est l\'un des artistes les plus reconnus et influents de l\'histoire du hip-hop.</p><p>De <em>Doggystyle</em> (1993) avec Dr. Dre à <em>R&G (Rhythm & Gangsta)</em> (2004), en passant par ses collaborations avec Pharrell, Katy Perry, et sa présence aux JO de Paris 2024, Snoop transcende les générations.</p>',
+    stats:[{n:'32.9M', l:'Auditeurs Spotify'},{n:'20+', l:'Albums'},{n:'1971', l:'Long Beach'}],
+    timeline:[
+      {year:'1993', event:'Doggystyle', loc:'Death Row Records / Dr. Dre', desc:'L\'album de toutes les révolutions — G-Funk au sommet.'},
+      {year:'1996', event:'Tha Doggfather', loc:'Death Row Records', desc:'Deuxième album, transition post-Tupac.'},
+      {year:'2004', event:'R&G (Rhythm & Gangsta)', loc:'Geffen Records', desc:'Drop It Like It\'s Hot — numéro 1 mondial.'},
+      {year:'2024', event:'JO Paris 2024', loc:'Paris, France', desc:'Commentateur officiel NBC et figure des Jeux Olympiques.'}
+    ],
+    releases:[],
+    youtube_ids:[],
+    socials:[
+      {label:'Spotify', url:'https://open.spotify.com/artist/7hJcb9fa4alzcOq3EaNPoG'}
+    ],
+    booking:null,
+    zone:'Los Angeles · International',
+    tags:["musique","usa","hip-hop","west coast","rap","g-funk"]
+  },
 
-// ── YOUNG THUG ───────────────────────────────────────────────────────────
-{
-id:‘young-thug’, name:“Young Thug”,
-short_name:“Thug”, hero_name:“Young<br><span>Thug</span>”,
-tag:“Trap · Melodic Rap · ATL”, ville:“Atlanta, GA”, cat:“musique”,
-img:“https://i.scdn.co/image/ab6761610000e5eb5e5e5e5e5e5e5e5e5e5e5e5”,
-badge:“◆ Vérifié”, label:“YSL Records”,
-origine:“Atlanta, Georgia 🇺🇸”, periode:“Depuis 2010”,
-genre:“Trap · Melodic Rap · ATL”,
-spotify_id:“50co4Is1HCEo8bhOyUWKpn”,
-spotify_listeners:“29.5M”,
-bio:`<p><strong>Young Thug</strong> (Jeffery Lamar Williams), né le 16 août 1991 à Atlanta, est l'architecte d'un style trap mélodique unique qui a redéfini le rap moderne.</p> <p>Fondateur de <strong>YSL Records</strong>, ses collaborations — <em>Havana</em> (2,4Mds streams), <em>Goodbyes</em> (1,4Mds), <em>pick up the phone</em> — en font l'un des artistes les plus streamés de sa génération.</p> <p>Condamné en 2024 dans le cadre du procès RICO YSL (Géorgie).</p>`,
-stats:[{n:“29.5M”,l:“Spotify/mois”},{n:“YSL”,l:“Records”},{n:“2.4Mds”,l:“Havana streams”}],
-timeline:[
-{year:“1991”, event:“Naissance”, loc:“Atlanta, Georgia”, desc:“Grandi dans le Bluff, l’un des quartiers les plus difficiles d’Atlanta.”},
-{year:“2011”, event:“Premiers mixtapes”, loc:“Atlanta”, desc:“Débuts underground — développement de son flow mélodique unique.”},
-{year:“2016”, event:“Jeffery”, loc:“YSL / 300 Ent.”, desc:“Mixtape révélatrice — chaque titre porte le prénom d’une légende.”},
-{year:“2019”, event:“So Much Fun”, loc:“1er album n°1”, desc:“Premier album numéro 1 au Billboard 200.”},
-{year:“2022”, event:“Business Is Business”, loc:“YSL Records”, desc:“Sorti depuis la prison avec Travis Scott, Drake, Future, 21 Savage.”},
-{year:“2024”, event:“Condamnation RICO”, loc:“Atlanta, Georgia”, desc:“Condamné dans l’affaire RICO YSL — incarcéré en Géorgie.”}
-],
-releases:[],
-youtube_ids:[],
-spotify_id:“50co4Is1HCEo8bhOyUWKpn”,
-socials:[
-{label:“Spotify”, url:“https://open.spotify.com/artist/50co4Is1HCEo8bhOyUWKpn”}
-],
-booking:null, zone:“USA · Monde”,
-tags:[“musique”,“atlanta”,“trap”,“rap”,“melodic”]
-},
+  // ── YOUNG THUG ───────────────────────────────────────────────────────────
+  {
+    id:'young-thug', name:"Young Thug", short_name:"Young Thug", hero_name:"Young Thug",
+    tag:"Trap · Atlanta · Pionnier", ville:"Atlanta, GA", cat:"musique",
+    img:"https://raw.githubusercontent.com/apanonstephane-prog/Monstaaa-portfolio/main/IMG_8517.JPG",
+    badge:null, label:"YSL Records",
+    origine:"Atlanta, GA 🇺🇸", periode:"2011 — aujourd'hui",
+    genre:"Trap · Atlanta · Melodic Rap",
+    spotify_id:"50co4Is1HCEo8bhOyUWKpn", spotify_listeners:"29.5M",
+    bio:'<p><strong>Young Thug</strong> (Jeffery Lamar Williams) est né le 16 août 1991 à Atlanta, Georgia. Pionnier du trap mélodique, son influence sur une génération entière de rappeurs est incontestable.</p><p>Fondateur de <em>YSL Records</em>, co-auteur de <em>Havana</em> (Camila Cabello — 2.4 milliards de streams) et <em>Goodbyes</em> (Post Malone — 1.4 milliard). Reconnu coupable en 2024 dans le procès RICO YSL (Géorgie).</p>',
+    stats:[{n:'29.5M', l:'Auditeurs Spotify'},{n:'2.4Mds', l:'Streams Havana'},{n:'2011', l:'Atlanta, GA'}],
+    timeline:[
+      {year:'2011', event:'Débuts Atlanta', loc:'Atlanta, GA', desc:'Premières mixtapes sur la scène underground d\'Atlanta.'},
+      {year:'2016', event:'Slime Season', loc:'YSL / Atlantic', desc:'Mixtape qui confirme son impact sur la trap.'},
+      {year:'2017', event:'Beautiful Thugger Girls', loc:'YSL / 300 Entertainment', desc:'Mélange de trap et country — album avant-gardiste.'},
+      {year:'2019', event:'So Much Fun', loc:'YSL / Atlantic', desc:'Premier album n°1 Billboard 200.'},
+      {year:'2024', event:'Procès RICO YSL', loc:'Atlanta', desc:'Condamné dans le cadre du procès RICO contre YSL.'}
+    ],
+    releases:[],
+    youtube_ids:[],
+    socials:[
+      {label:'Spotify', url:'https://open.spotify.com/artist/50co4Is1HCEo8bhOyUWKpn'}
+    ],
+    booking:null,
+    zone:'Atlanta · USA · International',
+    tags:["musique","usa","trap","atlanta","hip-hop","rap"]
+  },
 
-// ── BOOBA ────────────────────────────────────────────────────────────────
-{
-id:‘booba’, name:“Booba”,
-short_name:“Booba”, hero_name:“Booba”,
-tag:“Rap Français · Trap · Hardcore”, ville:“Boulogne-Billancourt”, cat:“musique”,
-img:“https://i.scdn.co/image/ab6761610000e5eb2a2a2a2a2a2a2a2a2a2a2a2a”,
-badge:“◆ Légende”, label:“DUC Records”,
-origine:“Boulogne-Billancourt 🇫🇷”, periode:“Depuis 1995”,
-genre:“Rap Français · Trap · Hardcore”,
-spotify_id:“58wXmynHaAWI5hwlPZP3qL”,
-spotify_listeners:“5M”,
-bio:`<p><strong>Booba</strong> (Élie Yaffa), né le 9 décembre 1976 à Boulogne-Billancourt d'origine sénégalaise, est l'artiste de rap français le plus influent de sa génération.</p> <p>De <em>Temps mort</em> (2002) à <em>ULTRA</em> (2020), il forge un style inimitable mêlant punchlines chirurgicales, production cinématographique et univers visuel ultra-soigné.</p> <p>Fondateur de <strong>DUC Records</strong>, il a lancé les carrières de Kaaris, Benash et de nombreux artistes de la nouvelle génération rap française.</p>`,
-stats:[{n:“5M”,l:“Spotify/mois”},{n:“DUC”,l:“Records”},{n:“2002”,l:“Temps mort”}],
-timeline:[
-{year:“1976”, event:“Naissance”, loc:“Boulogne-Billancourt”, desc:“Origines sénégalaises. Grandi en région parisienne.”},
-{year:“1995”, event:“Lunatic”, loc:“Avec Ali”, desc:“Duo légendaire — fondateur du rap français moderne.”},
-{year:“2002”, event:“Temps mort”, loc:“DUC Records”, desc:“Album de référence absolu du rap français. Certifié disque de platine.”},
-{year:“2006”, event:“Ouest Side”, loc:“DUC Records”, desc:“Consécration. L’un des albums de rap français les plus vendus.”},
-{year:“2017”, event:“AUTOPSIE Vol. 5”, loc:“DUC Records”, desc:“Série d’albums qui redéfinit le standard du rap français.”},
-{year:“2020”, event:“ULTRA”, loc:“Tallac Records”, desc:“Album phare de la période récente — production internationale.”}
-],
-releases:[],
-youtube_ids:[],
-spotify_id:“58wXmynHaAWI5hwlPZP3qL”,
-socials:[
-{label:“Spotify”, url:“https://open.spotify.com/artist/58wXmynHaAWI5hwlPZP3qL”}
-],
-booking:null, zone:“France · Monde”,
-tags:[“musique”,“paris”,“rap”,“trap”,“hardcore”,“rap francais”]
-},
+  // ── BOOBA ────────────────────────────────────────────────────────────────
+  {
+    id:'booba', name:"Booba", short_name:"Booba", hero_name:"Booba",
+    tag:"Rap FR · DUC · Boulbi", ville:"Boulogne-Billancourt", cat:"musique",
+    img:"https://raw.githubusercontent.com/apanonstephane-prog/Monstaaa-portfolio/main/IMG_9464.PNG",
+    badge:null, label:"DUC Records",
+    origine:"Boulogne-Billancourt 🇫🇷", periode:"1995 — aujourd'hui",
+    genre:"Rap Français · Trap · Afro",
+    spotify_id:"58wXmynHaAWI5hwlPZP3qL", spotify_listeners:"5M",
+    bio:'<p><strong>Booba</strong> (Élie Yaffa) est né le 9 décembre 1976 à Boulogne-Billancourt, d\'origines sénégalaises. Figure incontournable et controversée du rap français, fondateur de <em>DUC Records</em> et <em>Tallac Records</em>.</p><p>De <em>Temps mort</em> (2002) à <em>ULTRA</em> (2020), en passant par les séries <em>AUTOPSIE</em>, Booba a façonné plusieurs générations de rappeurs français. Installé à Miami, son influence dépasse largement les frontières.</p>',
+    stats:[{n:'5M', l:'Auditeurs Spotify'},{n:'12+', l:'Albums'},{n:'1976', l:'Boulogne-Billancourt'}],
+    timeline:[
+      {year:'1995', event:'Lunatic avec Ali', loc:'Paris', desc:'Duo légendaire qui pose les bases du rap parisien.'},
+      {year:'2002', event:'Temps mort', loc:'DUC Records', desc:'Premier album solo — classique intemporel.'},
+      {year:'2006', event:'Ouest Side', loc:'DUC Records', desc:'Album qui consolide son statut d\'icône.'},
+      {year:'2017', event:'ULTRA', loc:'Tallac Records', desc:'Virage trap international, album numérique.'},
+      {year:'2020', event:'ULTRA (version physique)', loc:'Tallac / DUC', desc:'Sortie physique et tournée internationale.'}
+    ],
+    releases:[],
+    youtube_ids:[],
+    socials:[
+      {label:'Spotify', url:'https://open.spotify.com/artist/58wXmynHaAWI5hwlPZP3qL'}
+    ],
+    booking:null,
+    zone:'France · Miami · International',
+    tags:["musique","paris","rap","hip-hop","trap","rap-fr"]
+  }
 
 ];
 
-let currentFilter = ‘all’;
+// ─── FILTRES ──────────────────────────────────────────────────────────────────
+
+var currentFilter = 'all';
 
 function renderArtists(list) {
-const filtered = applyFilters(list);
-const grid = document.getElementById(‘dir-grid’);
-const empty = document.getElementById(‘dir-empty’);
-const countEl = document.getElementById(‘dir-count-n’);
-if (!grid) return;
-if (!filtered.length) {
-grid.innerHTML = ‘’;
-empty.style.display = ‘block’;
-countEl.textContent = ‘0’;
-return;
-}
-empty.style.display = ‘none’;
-countEl.textContent = filtered.length;
-grid.innerHTML = filtered.map(a => `<div class="dir-card" onclick="openArtist('${a.id}')"> <img class="dir-card-img" src="${a.img}" alt="${a.name}" loading="lazy"> ${a.badge ?`<div class="dir-card-badge">${a.badge}</div>`: ''} <div class="dir-card-overlay"> <div class="dir-card-tag">${a.ville} · ${a.cat}</div> <div class="dir-card-name">${a.name}</div> <div class="dir-card-sub">${a.tag}${a.label ? ' — ' + a.label : ''}</div> </div> </div>`).join(’’);
+  var filtered = applyFilters(list);
+  var grid = document.getElementById('dir-grid');
+  var empty = document.getElementById('dir-empty');
+  var countEl = document.getElementById('dir-count-n');
+  if (!grid) return;
+  if (!filtered.length) {
+    grid.innerHTML = '';
+    if (empty) empty.style.display = 'block';
+    if (countEl) countEl.textContent = '0';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  if (countEl) countEl.textContent = filtered.length;
+  grid.innerHTML = filtered.map(function(a) {
+    return '<div class="dir-card" onclick="openArtist(\'' + a.id + '\')">'
+      + '<img class="dir-card-img" src="' + a.img + '" alt="' + a.name + '" loading="lazy">'
+      + (a.badge ? '<div class="dir-card-badge">' + a.badge + '</div>' : '')
+      + '<div class="dir-card-overlay">'
+      + '<div class="dir-card-tag">' + a.ville + ' · ' + a.cat + '</div>'
+      + '<div class="dir-card-name">' + a.name + '</div>'
+      + '<div class="dir-card-sub">' + a.tag + (a.label ? ' — ' + a.label : '') + '</div>'
+      + '</div></div>';
+  }).join('');
 }
 
 function applyFilters(list) {
-const q = (document.getElementById(‘dir-input’) ? document.getElementById(‘dir-input’).value : ‘’).toLowerCase().trim();
-let l = list;
-if (currentFilter !== ‘all’) l = l.filter(a => a.tags.some(t => t.includes(currentFilter)));
-if (q) l = l.filter(a => a.name.toLowerCase().includes(q) || a.ville.toLowerCase().includes(q) || a.tag.toLowerCase().includes(q) || a.tags.some(t => t.includes(q)));
-return l;
+  var input = document.getElementById('dir-input');
+  var q = input ? input.value.toLowerCase().trim() : '';
+  var l = list;
+  if (currentFilter !== 'all') l = l.filter(function(a) { return a.tags && a.tags.some(function(t) { return t.includes(currentFilter); }); });
+  if (q) l = l.filter(function(a) {
+    return a.name.toLowerCase().includes(q)
+      || a.ville.toLowerCase().includes(q)
+      || a.tag.toLowerCase().includes(q)
+      || (a.tags && a.tags.some(function(t) { return t.includes(q); }));
+  });
+  return l;
 }
 
 function filterArtists() { renderArtists(BEHERE_ARTISTS); }
 
 function setFilter(f, btn) {
-currentFilter = f;
-document.querySelectorAll(’.dir-chip’).forEach(c => c.classList.remove(‘active’));
-btn.classList.add(‘active’);
-filterArtists();
+  currentFilter = f;
+  document.querySelectorAll('.dir-chip').forEach(function(c) { c.classList.remove('active'); });
+  btn.classList.add('active');
+  filterArtists();
 }
 
-// ─── SPOTIFY API ────────────────────────────────────────────────────────────
+// ─── INIT ─────────────────────────────────────────────────────────────────────
 
-const SPOTIFY_CLIENT_ID     = ‘a07ece18d1384dcb8ec6bf9266fefebe’;
-const SPOTIFY_CLIENT_SECRET = ‘f8f886ddae5942d486f5dbac6f11639e’;
-// ─── YOUTUBE API ─────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  // Filtres landing (.ftag)
+  document.querySelectorAll('.ftag').forEach(function(t) {
+    t.addEventListener('click', function() {
+      document.querySelectorAll('.ftag').forEach(function(x) { x.classList.remove('active'); });
+      t.classList.add('active');
+    });
+  });
 
-const YOUTUBE_API_KEY = ‘AIzaSyD7rIYtvonr6kpjXrCOY8SS_8NP9i883sI’;
-
-async function fetchYoutubeClips(channelQuery, maxResults) {
-maxResults = maxResults || 6;
-try {
-// Recherche par nom artiste sur YouTube
-const url = ‘https://www.googleapis.com/youtube/v3/search?part=snippet’
-+ ‘&q=’ + encodeURIComponent(channelQuery + ’ clip officiel’)
-+ ‘&type=video&maxResults=’ + maxResults
-+ ‘&key=’ + YOUTUBE_API_KEY;
-const res = await fetch(url);
-const data = await res.json();
-if (!data.items) return [];
-return data.items.map(function(item) { return item.id.videoId; });
-} catch(e) {
-console.warn(‘YouTube fetch error:’, e);
-return [];
-}
-}
-
-async function enrichArtistClips(artistName, spotifyId) {
-// Ne fetch que si youtube_ids est vide
-const clipsGrid = document.querySelector(’#a-clips .clips-grid’);
-if (clipsGrid && clipsGrid.innerHTML.trim() !== ‘’) return;
-
-const videoIds = await fetchYoutubeClips(artistName, 4);
-if (!videoIds.length) return;
-
-// Afficher la section clips
-const clipsSec = document.getElementById(‘a-clips’);
-if (clipsSec) {
-clipsSec.style.display = ‘’;
-let grid = clipsSec.querySelector(’.clips-grid’);
-if (!grid) {
-grid = document.createElement(‘div’);
-grid.className = ‘clips-grid’;
-clipsSec.appendChild(grid);
-}
-grid.innerHTML = videoIds.map(function(vid) {
-return ‘<div class="clip-card"><div class="clip-wrap">’
-+ ‘<iframe src=“https://www.youtube.com/embed/’ + vid + ‘”’
-+ ’ frameborder=“0”’
-+ ’ allow=“accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture”’
-+ ’ allowfullscreen loading=“lazy”></iframe>’
-+ ‘</div></div>’;
-}).join(’’);
-
-```
-// Ajouter le lien nav si absent
-const navSub = document.querySelector('.anav-sub');
-if (navSub && !navSub.querySelector('a[href="#a-clips"]')) {
-  const contactLink = navSub.querySelector('a[href="#a-contact"]');
-  const a = document.createElement('a');
-  a.href = '#a-clips';
-  a.textContent = 'Clips';
-  if (contactLink) navSub.insertBefore(a, contactLink);
-}
-```
-
-}
-}
-
-let _spotifyToken = null;
-let _spotifyTokenExp = 0;
-
-async function getSpotifyToken() {
-if (_spotifyToken && Date.now() < _spotifyTokenExp) return _spotifyToken;
-try {
-const res = await fetch(‘https://accounts.spotify.com/api/token’, {
-method: ‘POST’,
-headers: {
-‘Content-Type’: ‘application/x-www-form-urlencoded’,
-‘Authorization’: ’Basic ’ + btoa(SPOTIFY_CLIENT_ID + ‘:’ + SPOTIFY_CLIENT_SECRET)
-},
-body: ‘grant_type=client_credentials’
+  // Tabs feed landing
+  document.querySelectorAll('.ftab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.ftab').forEach(function(x) { x.classList.remove('active'); });
+      tab.classList.add('active');
+    });
+  });
 });
-const data = await res.json();
-_spotifyToken = data.access_token;
-_spotifyTokenExp = Date.now() + (data.expires_in - 60) * 1000;
-return _spotifyToken;
-} catch(e) {
-console.warn(‘Spotify token error:’, e);
-return null;
-}
-}
 
-async function fetchSpotifyArtist(artistId) {
-const token = await getSpotifyToken();
-if (!token || !artistId) return null;
-try {
-const res = await fetch(‘https://api.spotify.com/v1/artists/’ + artistId, {
-headers: { ‘Authorization’: ’Bearer ’ + token }
-});
-return await res.json();
-} catch(e) {
-console.warn(‘Spotify artist fetch error:’, e);
-return null;
-}
-}
+</script>
 
-async function fetchSpotifyTopTracks(artistId) {
-const token = await getSpotifyToken();
-if (!token || !artistId) return [];
-try {
-const res = await fetch(‘https://api.spotify.com/v1/artists/’ + artistId + ‘/top-tracks?market=FR’, {
-headers: { ‘Authorization’: ’Bearer ’ + token }
-});
-const data = await res.json();
-return data.tracks || [];
-} catch(e) {
-return [];
-}
-}
-
-async function enrichArtistPage(spotifyId) {
-if (!spotifyId) return;
-const [artistData, tracks] = await Promise.all([
-fetchSpotifyArtist(spotifyId),
-fetchSpotifyTopTracks(spotifyId)
-]);
-
-// Photo hero depuis Spotify
-if (artistData && artistData.images && artistData.images[0]) {
-const heroImg = document.querySelector(’#artist-detail .a-hero img’);
-if (heroImg) heroImg.src = artistData.images[0].url;
-}
-
-// Top tracks → players Spotify dans section musique
-if (tracks.length > 0) {
-const musiqueSec = document.getElementById(‘a-musique’);
-if (musiqueSec) {
-let grid = musiqueSec.querySelector(’.covers-grid’);
-const isEmpty = !grid || grid.innerHTML.trim() === ‘’;
-if (isEmpty) {
-if (!grid) {
-grid = document.createElement(‘div’);
-grid.className = ‘covers-grid’;
-musiqueSec.appendChild(grid);
-}
-grid.innerHTML = tracks.slice(0, 6).map(function(t) {
-var imgTag = (t.album && t.album.images[0])
-? ‘<img src="' + t.album.images[0].url + '" alt="' + t.name + '" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px 6px 0 0;">’
-: ‘’;
-var year = t.album ? t.album.release_date.slice(0,4) : ‘’;
-var type = t.album ? t.album.album_type : ‘Track’;
-return ‘<div class="cover-card">’
-+ imgTag
-+ ‘<div class="cover-info"><div class="cover-year">’ + year + ’ · ’ + type + ‘</div>’
-+ ‘<div class="cover-title">’ + t.name + ‘</div></div>’
-+ ‘<div class="cover-player"><iframe src=“https://open.spotify.com/embed/track/’ + t.id + ‘?utm_source=generator”’
-+ ’ width=“100%” height=“80” frameborder=“0”’
-+ ’ allow=“autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture”’
-+ ’ loading=“lazy”></iframe></div></div>’;
-}).join(’’);
-}
-}
-}
-}
-
-// Filtres landing (.ftag)
-document.addEventListener(‘DOMContentLoaded’, function() {
-document.querySelectorAll(’.ftag’).forEach(t => {
-t.addEventListener(‘click’, function() {
-document.querySelectorAll(’.ftag’).forEach(x => x.classList.remove(‘active’));
-this.classL
+</body>
+</html>
