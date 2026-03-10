@@ -47,7 +47,7 @@ export default function Nav() {
             </Link>
           ))}
           <Link
-            href="/artists"
+            href="/rejoindre"
             className="text-sm px-4 py-1.5 bg-amber-500 text-black font-semibold rounded-full hover:bg-amber-400 transition-colors"
           >
             Créer ma page
@@ -84,7 +84,7 @@ export default function Nav() {
             </Link>
           ))}
           <Link
-            href="/artists"
+            href="/rejoindre"
             className="text-sm px-4 py-2 bg-amber-500 text-black font-semibold rounded-full text-center"
             onClick={() => setMenuOpen(false)}
           >

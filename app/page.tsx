@@ -37,7 +37,7 @@ export default function Home() {
               Découvrir les artistes
             </Link>
             <Link
-              href="/artists"
+              href="/rejoindre"
               className="px-8 py-3 border border-zinc-700 text-white rounded-full hover:border-amber-500/50 transition-colors text-sm tracking-wider uppercase"
             >
               Créer ma page
