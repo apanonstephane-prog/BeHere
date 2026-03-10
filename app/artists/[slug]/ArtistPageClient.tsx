@@ -16,7 +16,6 @@ interface SpotifyTrack {
 interface YouTubeVideo {
   id: string;
   title: string;
-  thumbnail: string;
 }
 
 interface Props {
@@ -36,37 +35,9 @@ function msToMinSec(ms: number) {
 const YT_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
 const YT_BASE = 'https://www.googleapis.com/youtube/v3';
 
-async function fetchYouTubeData(handle: string): Promise<{ photo: string | null; videos: YouTubeVideo[] }> {
-  const cleanHandle = handle.startsWith('@') ? handle.slice(1) : handle;
-  const chanRes = await fetch(
-    `${YT_BASE}/channels?part=snippet,contentDetails&forHandle=${encodeURIComponent(cleanHandle)}&key=${YT_KEY}`
-  );
-  const chanData = await chanRes.json();
-  if (!chanData.items?.length) return { photo: null, videos: [] };
-
-  const channel = chanData.items[0];
-  const photo = channel.snippet?.thumbnails?.high?.url ?? channel.snippet?.thumbnails?.default?.url ?? null;
-  const uploadsId = channel.contentDetails?.relatedPlaylists?.uploads;
-  if (!uploadsId) return { photo, videos: [] };
-
-  const vidRes = await fetch(
-    `${YT_BASE}/playlistItems?part=snippet&playlistId=${uploadsId}&maxResults=50&key=${YT_KEY}`
-  );
-  const vidData = await vidRes.json();
-  const videos: YouTubeVideo[] = (vidData.items ?? [])
-    .filter((item: any) => item.snippet?.resourceId?.videoId)
-    .map((item: any) => ({
-      id: item.snippet.resourceId.videoId,
-      title: item.snippet.title,
-      thumbnail: item.snippet.thumbnails?.high?.url ?? '',
-    }));
-
-  return { photo, videos };
-}
-
 export default function ArtistPageClient({
   artist,
-  photoUrl: spotifyPhoto,
+  photoUrl,
   followers,
   monthlyListeners,
   topTracks,
@@ -74,20 +45,33 @@ export default function ArtistPageClient({
   const [activeTab, setActiveTab] = useState<'music' | 'videos' | 'about'>('music');
   const [activeRelease, setActiveRelease] = useState(0);
   const [videos, setVideos] = useState<YouTubeVideo[]>([]);
-  const [ytPhoto, setYtPhoto] = useState<string | null>(null);
   const [loadingVideos, setLoadingVideos] = useState(false);
 
-  const photoUrl = spotifyPhoto ?? ytPhoto;
-
+  const photo = photoUrl;
   const youtubeHandle = artist.youtube_channel ?? artist.youtube_channel2 ?? null;
 
+  // Fetch automatique des clips depuis YouTube — côté client (navigateur)
   useEffect(() => {
     if (!youtubeHandle || !YT_KEY) return;
+    const handle = youtubeHandle.startsWith('@') ? youtubeHandle.slice(1) : youtubeHandle;
     setLoadingVideos(true);
-    fetchYouTubeData(youtubeHandle)
-      .then(({ photo, videos }) => {
-        setYtPhoto(photo);
-        setVideos(videos);
+
+    fetch(`${YT_BASE}/channels?part=contentDetails&forHandle=${encodeURIComponent(handle)}&key=${YT_KEY}`)
+      .then((r) => r.json())
+      .then((data) => {
+        const uploadsId = data?.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
+        if (!uploadsId) { setLoadingVideos(false); return; }
+        return fetch(`${YT_BASE}/playlistItems?part=snippet&playlistId=${uploadsId}&maxResults=50&key=${YT_KEY}`)
+          .then((r) => r.json())
+          .then((vidData) => {
+            const list: YouTubeVideo[] = (vidData.items ?? [])
+              .filter((item: { snippet?: { resourceId?: { videoId?: string } } }) => item.snippet?.resourceId?.videoId)
+              .map((item: { snippet: { resourceId: { videoId: string }; title: string } }) => ({
+                id: item.snippet.resourceId.videoId,
+                title: item.snippet.title,
+              }));
+            setVideos(list);
+          });
       })
       .catch(() => {})
       .finally(() => setLoadingVideos(false));
@@ -116,8 +100,8 @@ export default function ArtistPageClient({
           <div className="flex flex-col md:flex-row gap-8 items-start md:items-center">
             {/* Photo */}
             <div className="w-32 h-32 md:w-48 md:h-48 rounded-2xl overflow-hidden flex-shrink-0 bg-zinc-800 border border-zinc-700">
-              {photoUrl ? (
-                <img src={photoUrl} alt={artist.name} className="w-full h-full object-cover" />
+              {photo ? (
+                <img src={photo} alt={artist.name} className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-amber-500/20 to-zinc-900">
                   <span className="text-4xl md:text-5xl font-black text-amber-400">{initials}</span>
@@ -173,7 +157,7 @@ export default function ArtistPageClient({
                 )}
               </div>
 
-              {/* Streaming */}
+              {/* Liens streaming */}
               <div className="flex gap-3 flex-wrap">
                 {artist.spotify_id && (
                   <a
@@ -182,7 +166,7 @@ export default function ArtistPageClient({
                     rel="noopener noreferrer"
                     className="px-4 py-2 bg-green-500 text-black text-sm font-bold rounded-full hover:bg-green-400 transition-colors flex items-center gap-2"
                   >
-                    <span>♫</span> Spotify
+                    ♫ Spotify
                   </a>
                 )}
                 {artist.instagram && (
@@ -216,13 +200,13 @@ export default function ArtistPageClient({
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`py-4 px-6 text-sm font-medium transition-colors capitalize border-b-2 ${
+              className={`py-4 px-6 text-sm font-medium transition-colors border-b-2 ${
                 activeTab === tab
                   ? 'text-amber-400 border-amber-400'
                   : 'text-zinc-500 border-transparent hover:text-zinc-300'
               }`}
             >
-              {tab === 'music' ? 'Musique' : tab === 'videos' ? 'Clips' : 'À propos'}
+              {tab === 'music' ? 'Musique' : tab === 'videos' ? `Clips${videos.length ? ` (${videos.length})` : ''}` : 'À propos'}
             </button>
           ))}
         </div>
@@ -249,7 +233,9 @@ export default function ArtistPageClient({
                       } bg-zinc-900`}
                     >
                       <div className="aspect-square bg-zinc-800 flex items-center justify-center text-3xl">
-                        {release.type === 'single' ? '🎵' : release.type === 'mixtape' ? '📼' : '💿'}
+                        {release.cover_url
+                          ? <img src={release.cover_url} alt={release.title} className="w-full h-full object-cover" />
+                          : release.type === 'single' ? '🎵' : release.type === 'mixtape' ? '📼' : '💿'}
                       </div>
                       <div className="p-3">
                         <p className="text-white text-xs font-bold truncate">{release.title}</p>
@@ -261,9 +247,7 @@ export default function ArtistPageClient({
 
                 {artist.releases[activeRelease] && (
                   <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-6">
-                    <h3 className="text-white font-bold mb-4">
-                      {artist.releases[activeRelease].title}
-                    </h3>
+                    <h3 className="text-white font-bold mb-4">{artist.releases[activeRelease].title}</h3>
                     {artist.releases[activeRelease].spotify_id && (
                       <iframe
                         src={`https://open.spotify.com/embed/${
@@ -288,17 +272,14 @@ export default function ArtistPageClient({
                     {!artist.releases[activeRelease].spotify_id &&
                       !artist.releases[activeRelease].soundcloud_url && (
                         <div className="text-center py-8">
-                          <p className="text-zinc-500 text-sm">
-                            Rechercher sur{' '}
-                            <a
-                              href={`https://open.spotify.com/search/${encodeURIComponent(artist.releases[activeRelease].title + ' ' + artist.name)}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-green-400 hover:text-green-300"
-                            >
-                              Spotify
-                            </a>
-                          </p>
+                          <a
+                            href={`https://open.spotify.com/search/${encodeURIComponent(artist.releases[activeRelease].title + ' ' + artist.name)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-green-400 hover:text-green-300 text-sm"
+                          >
+                            Rechercher sur Spotify →
+                          </a>
                         </div>
                       )}
                   </div>
@@ -318,22 +299,12 @@ export default function ArtistPageClient({
                       rel="noopener noreferrer"
                       className="flex items-center gap-4 p-3 rounded-xl hover:bg-zinc-900 group transition-colors"
                     >
-                      <span className="text-zinc-600 text-sm w-4 text-right group-hover:text-amber-400">
-                        {i + 1}
-                      </span>
+                      <span className="text-zinc-600 text-sm w-4 text-right group-hover:text-amber-400">{i + 1}</span>
                       {track.album.images[0] && (
-                        <img
-                          src={track.album.images[0].url}
-                          alt=""
-                          className="w-10 h-10 rounded object-cover"
-                        />
+                        <img src={track.album.images[0].url} alt="" className="w-10 h-10 rounded object-cover" />
                       )}
-                      <span className="text-white text-sm flex-1 truncate group-hover:text-amber-400">
-                        {track.name}
-                      </span>
-                      <span className="text-zinc-500 text-xs">
-                        {msToMinSec(track.duration_ms)}
-                      </span>
+                      <span className="text-white text-sm flex-1 truncate group-hover:text-amber-400">{track.name}</span>
+                      <span className="text-zinc-500 text-xs">{msToMinSec(track.duration_ms)}</span>
                     </a>
                   ))}
                 </div>
@@ -381,11 +352,7 @@ export default function ArtistPageClient({
                           loading="lazy"
                         />
                       </div>
-                      {video.title && (
-                        <div className="px-3 py-2">
-                          <p className="text-zinc-300 text-xs truncate">{video.title}</p>
-                        </div>
-                      )}
+                      <p className="px-3 py-2 text-zinc-400 text-xs truncate">{video.title}</p>
                     </div>
                   ))}
                 </div>
@@ -416,7 +383,6 @@ export default function ArtistPageClient({
                 <h2 className="text-xl font-black text-white mb-4">Biographie</h2>
                 <p className="text-zinc-400 leading-relaxed">{artist.bio}</p>
               </div>
-
               {artist.timeline && artist.timeline.length > 0 && (
                 <div>
                   <h2 className="text-xl font-black text-white mb-6">Parcours</h2>
@@ -452,9 +418,7 @@ export default function ArtistPageClient({
                     <p className="text-zinc-500 text-xs">Genre</p>
                     <div className="flex flex-wrap gap-1 mt-1">
                       {artist.genre.map((g) => (
-                        <span key={g} className="text-xs px-2 py-0.5 bg-zinc-800 text-zinc-300 rounded-full">
-                          {g}
-                        </span>
+                        <span key={g} className="text-xs px-2 py-0.5 bg-zinc-800 text-zinc-300 rounded-full">{g}</span>
                       ))}
                     </div>
                   </div>
@@ -471,43 +435,29 @@ export default function ArtistPageClient({
                 <h3 className="text-white font-bold text-sm mb-4">Liens</h3>
                 <div className="space-y-2">
                   {artist.spotify_id && (
-                    <a
-                      href={`https://open.spotify.com/artist/${artist.spotify_id}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-3 text-zinc-400 hover:text-white transition-colors text-sm"
-                    >
+                    <a href={`https://open.spotify.com/artist/${artist.spotify_id}`} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-3 text-zinc-400 hover:text-white transition-colors text-sm">
                       <span className="w-6 h-6 rounded bg-green-500/20 flex items-center justify-center text-green-400 text-xs">♫</span>
                       Spotify
                     </a>
                   )}
                   {artist.instagram && (
-                    <a
-                      href={`https://instagram.com/${artist.instagram}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-3 text-zinc-400 hover:text-white transition-colors text-sm"
-                    >
+                    <a href={`https://instagram.com/${artist.instagram}`} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-3 text-zinc-400 hover:text-white transition-colors text-sm">
                       <span className="w-6 h-6 rounded bg-pink-500/20 flex items-center justify-center text-pink-400 text-xs">📸</span>
                       @{artist.instagram}
                     </a>
                   )}
                   {artist.youtube_channel && (
-                    <a
-                      href={`https://youtube.com/${artist.youtube_channel}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-3 text-zinc-400 hover:text-white transition-colors text-sm"
-                    >
+                    <a href={`https://youtube.com/${artist.youtube_channel}`} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-3 text-zinc-400 hover:text-white transition-colors text-sm">
                       <span className="w-6 h-6 rounded bg-red-500/20 flex items-center justify-center text-red-400 text-xs">▶</span>
                       YouTube
                     </a>
                   )}
                   {artist.booking_email && (
-                    <a
-                      href={`mailto:${artist.booking_email}`}
-                      className="flex items-center gap-3 text-zinc-400 hover:text-white transition-colors text-sm"
-                    >
+                    <a href={`mailto:${artist.booking_email}`}
+                      className="flex items-center gap-3 text-zinc-400 hover:text-white transition-colors text-sm">
                       <span className="w-6 h-6 rounded bg-amber-500/20 flex items-center justify-center text-amber-400 text-xs">✉</span>
                       Booking
                     </a>

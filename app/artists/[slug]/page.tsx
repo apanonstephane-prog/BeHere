@@ -15,6 +15,19 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
+async function getDeezerPhoto(artistName: string): Promise<string | null> {
+  try {
+    const res = await fetch(
+      `https://api.deezer.com/search/artist?q=${encodeURIComponent(artistName)}&limit=1`,
+      { next: { revalidate: 86400 } }
+    );
+    const data = await res.json();
+    return data?.data?.[0]?.picture_xl ?? data?.data?.[0]?.picture_big ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export default async function ArtistPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const artist = getArtistBySlug(slug);
@@ -30,11 +43,14 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
         getSpotifyArtistTopTracks(artist.spotify_id),
       ]);
     } catch {
-      // Spotify unavailable — graceful fallback
+      // Spotify unavailable
     }
   }
 
-  const photoUrl = spotifyData?.images?.[0]?.url ?? null;
+  // Photo : Spotify d'abord, Deezer en fallback automatique
+  const spotifyPhoto = spotifyData?.images?.[0]?.url ?? null;
+  const photoUrl = spotifyPhoto ?? (await getDeezerPhoto(artist.name));
+
   const followers = spotifyData?.followers?.total
     ? new Intl.NumberFormat('fr-FR').format(spotifyData.followers.total)
     : null;
