@@ -19,12 +19,9 @@ export default function Nav() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <img
-            src="https://raw.githubusercontent.com/apanonstephane-prog/BeHere/main/BeHere_Logo_transparent.png"
+            src="/logo.svg"
             alt="BeHere"
             className="h-12 w-12 object-contain"
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = 'none';
-            }}
           />
           <span className="text-white font-bold text-lg tracking-wider">
             Be<span className="text-amber-400">Here</span>
