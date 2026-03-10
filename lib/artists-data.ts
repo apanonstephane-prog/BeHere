@@ -10,7 +10,6 @@ export interface Artist {
   bio: string;
   spotify_id?: string;
   spotify_listeners?: string;
-  youtube_ids?: string[];
   instagram?: string;
   facebook?: string;
   youtube_channel?: string;
@@ -57,13 +56,6 @@ export const ARTISTS: Artist[] = [
     youtube_channel: '@monstaaalovni8706',
     youtube_channel2: '@monstaa-ai',
     booking_email: 'bande2loups@gmail.com',
-    youtube_ids: [
-      '8a3WVLyeX7o', 'IX-0CJ_BPbw', 'kOX1GZfE-RI', 'grgG7uhbOYk',
-      'sSyWz54XhHg', '0P22qDjq0rE', 'jT4J9bCwyug', '3pJNUE66Cxw',
-      'UySbhaYcBbA', 'ucHdomDQyZc', 'D6x9710KkSw', '4N01tMEGSqc',
-      'f4pcKdh-ZZU', 'OT0VFxek_j8', 'yJxjBZUmIrU', 'mWlQnh06wpM',
-      'PU6HuRSJqXc', 'M5Kz6Cnuim0',
-    ],
     releases: [
       { id: 'juste-une-minute', title: 'Juste Une Minute', year: 2026, type: 'single', spotify_id: '61h7pq9pswhEeyDide34Yr' },
       { id: 'le-son-du-four', title: 'Le Son du Four', year: 2025, type: 'single', spotify_id: '6ffJucnPumZo2QucBCV2Ax' },
@@ -105,7 +97,6 @@ export const ARTISTS: Artist[] = [
     category: 'music',
     label: 'Bande 2 Loups Records',
     bio: "Rappeur au flow engagé et aux références philosophiques profondes — Griffith de Berserk, Morpheus de Matrix. Né à Madagascar, TOXIC' s'impose dans la scène underground lyonnaise au sein de Bande 2 Loups Records. Co-fondateur de GI.Corp, structure de production musicale et audiovisuelle, il combine rap conscient, trap et touches afrobeat dans des textes ciselés.",
-    youtube_ids: [],
     timeline: [
       { year: 2015, event: 'Intégration Bande 2 Loups Records' },
       { year: 2017, event: 'Freestyle B2L feat. Bidox & Williams, prod Maeskro' },
@@ -146,7 +137,6 @@ export const ARTISTS: Artist[] = [
     label: 'Killa Sound Massive',
     bio: "Membre fondateur du groupe ETHOS et pilier du Killa Sound Massive (créé en 1999), SEKTA incarne la scène reggae-dancehall lyonnaise depuis plus de 15 ans. À la croisée du reggae roots, du dancehall et du rap urbain, son show man reconnu lui a valu des premières parties de Buju Banton, Admiral T, Junior Kelly, Turbulence, Sniper et Lino.",
     instagram: 'sekta_officiel',
-    youtube_ids: [],
     timeline: [
       { year: 1999, event: 'Killa Sound Massive — Lyon' },
       { year: 2011, event: 'Scène Fête de la Musique Lyon aux côtés de Sekel Block' },
@@ -168,7 +158,6 @@ export const ARTISTS: Artist[] = [
     spotify_id: '4VYr2jD1AzhmEyT2L8xTg4',
     instagram: 'xman972',
     booking_email: 'xmanagement972@gmail.com',
-    youtube_ids: [],
     releases: [
       { id: 'saturday-night', title: 'Saturday Night', year: 2014, type: 'album' },
       { id: 'x-retrospective', title: 'X-Retrospective Vol.1', year: 2013, type: 'album' },
@@ -197,7 +186,6 @@ export const ARTISTS: Artist[] = [
     bio: "Né en 1978 en Martinique, Yaniss Odua est l'une des figures majeures du reggae français. Plus de 120 millions de vues YouTube cumulées, une discographie riche traversant le reggae roots, le dancehall et le Futu'Roots. Son single La Caraïbe l'a propulsé sur la scène internationale.",
     spotify_id: '4DIUpxntUKirdKs79Cpjrl',
     instagram: 'yanissodua',
-    youtube_ids: [],
     releases: [
       { id: 'stay-high', title: 'Stay High', year: 2022, type: 'album' },
       { id: 'nouvelle-donne', title: 'Nouvelle Donne', year: 2017, type: 'album' },
@@ -225,7 +213,6 @@ export const ARTISTS: Artist[] = [
     label: 'Xterminator Productions',
     bio: "Né le 17 avril 1976 à Annotto Bay, élevé à August Town Kingston, Sizzla est une légende vivante du reggae roots et du dancehall. Membre de l'ordre Bobo Ashanti, sa discographie compte plus de 60 albums. Black Woman & Child (1997) reste un classique absolu du genre.",
     spotify_id: '5RXsUXZSsGMVqWfvSnqbj6',
-    youtube_ids: [],
     releases: [
       { id: 'black-woman-child', title: 'Black Woman & Child', year: 1997, type: 'album' },
       { id: 'praise-ye-jah', title: 'Praise Ye Jah', year: 1997, type: 'album' },
@@ -250,7 +237,6 @@ export const ARTISTS: Artist[] = [
     label: 'Conglomerate Records',
     bio: "Né le 20 mai 1972 à Brooklyn, Trevor Tahiem Smith Jr. alias Busta Rhymes est une icône du hip-hop East Coast. Flow ultra-rapide, énergie scénique légendaire, hits planétaires. De The Coming (1996) à Extinction Level Event (1998), il a redéfini les standards du rap.",
     spotify_id: '1YfEcTuGvBQ8xSD1f53UnK',
-    youtube_ids: [],
     releases: [
       { id: 'extinction', title: 'Extinction Level Event', year: 1998, type: 'album' },
       { id: 'when-disaster', title: 'When Disaster Strikes', year: 1997, type: 'album' },
@@ -276,7 +262,6 @@ export const ARTISTS: Artist[] = [
     label: 'Doggystyle Records',
     bio: "Né le 20 octobre 1971 à Long Beach, Calvin Cordozar Broadus Jr. alias Snoop Dogg est une légende du hip-hop mondial. Doggystyle (1993) reste l'un des albums les plus vendus de l'histoire du rap. Ambassadeur de la culture hip-hop depuis 30 ans.",
     spotify_id: '7hJcb9fa4alzcOq3EaNPoG',
-    youtube_ids: [],
     releases: [
       { id: 'doggystyle', title: 'Doggystyle', year: 1993, type: 'album' },
       { id: 'tha-doggfather', title: 'Tha Doggfather', year: 1996, type: 'album' },
@@ -302,7 +287,6 @@ export const ARTISTS: Artist[] = [
     label: 'YSL Records',
     bio: "Né le 16 août 1991 à Atlanta, Jeffery Lamar Williams alias Young Thug a révolutionné le trap avec son flow mélodique unique. Co-fondateur de YSL Records, il a façonné le son d'une génération.",
     spotify_id: '50co4Is1HCEo8bhOyUWKpn',
-    youtube_ids: [],
     releases: [
       { id: 'punk', title: 'PUNK', year: 2021, type: 'album' },
       { id: 'so-much-fun', title: 'So Much Fun', year: 2019, type: 'album' },
@@ -327,7 +311,6 @@ export const ARTISTS: Artist[] = [
     bio: "Né le 9 décembre 1976 à Boulogne-Billancourt, d'origine sénégalaise, Élie Yaffa alias Booba est l'une des figures les plus influentes du rap français. Discographie monumentale depuis Temps Mort (2002), il a façonné le rap francophone pendant deux décennies.",
     spotify_id: '3YvCp8mzwGbvbABkCmijgQ',
     instagram: 'booba',
-    youtube_ids: [],
     releases: [
       { id: 'ultra', title: 'ULTRA', year: 2020, type: 'album' },
       { id: 'au-dela', title: 'Au-delà', year: 2012, type: 'album' },

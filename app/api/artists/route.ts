@@ -69,7 +69,6 @@ export async function POST(req: NextRequest) {
         timeline: a.timeline ?? [],
         releases: a.releases ?? [],
         stats: a.stats ?? {},
-        youtube_ids: a.youtube_ids ?? [],
       })),
       { onConflict: 'id' }
     );

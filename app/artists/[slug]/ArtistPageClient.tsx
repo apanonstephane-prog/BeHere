@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { Artist } from '@/lib/artists-data';
+import { YouTubeVideo } from '@/lib/youtube';
 import { useState } from 'react';
 
 interface SpotifyTrack {
@@ -19,6 +20,7 @@ interface Props {
   followers: string | null;
   monthlyListeners: string | null;
   topTracks: SpotifyTrack[];
+  videos: YouTubeVideo[];
 }
 
 function msToMinSec(ms: number) {
@@ -33,6 +35,7 @@ export default function ArtistPageClient({
   followers,
   monthlyListeners,
   topTracks,
+  videos,
 }: Props) {
   const [activeTab, setActiveTab] = useState<'music' | 'videos' | 'about'>('music');
   const [activeRelease, setActiveRelease] = useState(0);
@@ -340,24 +343,29 @@ export default function ArtistPageClient({
         {/* VIDEOS */}
         {activeTab === 'videos' && (
           <div>
-            {artist.youtube_ids && artist.youtube_ids.length > 0 ? (
+            {videos.length > 0 ? (
               <>
                 <h2 className="text-xl font-black text-white mb-6">
-                  Clips ({artist.youtube_ids.length})
+                  Clips ({videos.length})
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {artist.youtube_ids.map((id, i) => (
-                    <div key={id} className="rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800">
-                      <div className="aspect-video">
+                  {videos.map((video) => (
+                    <div key={video.id} className="rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800 group">
+                      <div className="aspect-video relative">
                         <iframe
-                          src={`https://www.youtube.com/embed/${id}`}
-                          title={`Clip ${i + 1}`}
+                          src={`https://www.youtube.com/embed/${video.id}`}
+                          title={video.title}
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                           allowFullScreen
                           className="w-full h-full"
                           loading="lazy"
                         />
                       </div>
+                      {video.title && (
+                        <div className="px-3 py-2">
+                          <p className="text-zinc-300 text-xs truncate">{video.title}</p>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -366,18 +374,14 @@ export default function ArtistPageClient({
               <div className="text-center py-20">
                 <p className="text-zinc-500 mb-4">Clips disponibles bientôt.</p>
                 {(artist.youtube_channel || artist.youtube_channel2) && (
-                  <div className="flex gap-4 justify-center">
-                    {artist.youtube_channel && (
-                      <a
-                        href={`https://youtube.com/${artist.youtube_channel}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-red-400 hover:text-red-300 text-sm"
-                      >
-                        Voir sur YouTube →
-                      </a>
-                    )}
-                  </div>
+                  <a
+                    href={`https://youtube.com/${artist.youtube_channel ?? artist.youtube_channel2}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-red-400 hover:text-red-300 text-sm"
+                  >
+                    Voir la chaîne YouTube →
+                  </a>
                 )}
               </div>
             )}
