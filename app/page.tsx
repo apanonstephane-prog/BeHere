@@ -17,7 +17,7 @@ export default function Home() {
           <img
             src="https://raw.githubusercontent.com/apanonstephane-prog/BeHere/main/BeHere_Logo_transparent.png"
             alt="BeHere"
-            className="w-48 h-48 md:w-64 md:h-64 object-contain mx-auto mb-8"
+            className="w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 object-contain mx-auto mb-8"
           />
           <p className="text-zinc-400 text-lg md:text-xl tracking-widest uppercase mb-2">
             Sois là où tu dois être
