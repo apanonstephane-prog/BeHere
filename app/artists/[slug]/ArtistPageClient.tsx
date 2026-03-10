@@ -2,8 +2,7 @@
 
 import Link from 'next/link';
 import { Artist } from '@/lib/artists-data';
-import { YouTubeVideo } from '@/lib/youtube';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface SpotifyTrack {
   id: string;
@@ -14,13 +13,18 @@ interface SpotifyTrack {
   duration_ms: number;
 }
 
+interface YouTubeVideo {
+  id: string;
+  title: string;
+  thumbnail: string;
+}
+
 interface Props {
   artist: Artist;
   photoUrl: string | null;
   followers: string | null;
   monthlyListeners: string | null;
   topTracks: SpotifyTrack[];
-  videos: YouTubeVideo[];
 }
 
 function msToMinSec(ms: number) {
@@ -29,16 +33,65 @@ function msToMinSec(ms: number) {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
+const YT_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
+const YT_BASE = 'https://www.googleapis.com/youtube/v3';
+
+async function fetchYouTubeData(handle: string): Promise<{ photo: string | null; videos: YouTubeVideo[] }> {
+  const cleanHandle = handle.startsWith('@') ? handle.slice(1) : handle;
+  const chanRes = await fetch(
+    `${YT_BASE}/channels?part=snippet,contentDetails&forHandle=${encodeURIComponent(cleanHandle)}&key=${YT_KEY}`
+  );
+  const chanData = await chanRes.json();
+  if (!chanData.items?.length) return { photo: null, videos: [] };
+
+  const channel = chanData.items[0];
+  const photo = channel.snippet?.thumbnails?.high?.url ?? channel.snippet?.thumbnails?.default?.url ?? null;
+  const uploadsId = channel.contentDetails?.relatedPlaylists?.uploads;
+  if (!uploadsId) return { photo, videos: [] };
+
+  const vidRes = await fetch(
+    `${YT_BASE}/playlistItems?part=snippet&playlistId=${uploadsId}&maxResults=50&key=${YT_KEY}`
+  );
+  const vidData = await vidRes.json();
+  const videos: YouTubeVideo[] = (vidData.items ?? [])
+    .filter((item: any) => item.snippet?.resourceId?.videoId)
+    .map((item: any) => ({
+      id: item.snippet.resourceId.videoId,
+      title: item.snippet.title,
+      thumbnail: item.snippet.thumbnails?.high?.url ?? '',
+    }));
+
+  return { photo, videos };
+}
+
 export default function ArtistPageClient({
   artist,
-  photoUrl,
+  photoUrl: spotifyPhoto,
   followers,
   monthlyListeners,
   topTracks,
-  videos,
 }: Props) {
   const [activeTab, setActiveTab] = useState<'music' | 'videos' | 'about'>('music');
   const [activeRelease, setActiveRelease] = useState(0);
+  const [videos, setVideos] = useState<YouTubeVideo[]>([]);
+  const [ytPhoto, setYtPhoto] = useState<string | null>(null);
+  const [loadingVideos, setLoadingVideos] = useState(false);
+
+  const photoUrl = spotifyPhoto ?? ytPhoto;
+
+  const youtubeHandle = artist.youtube_channel ?? artist.youtube_channel2 ?? null;
+
+  useEffect(() => {
+    if (!youtubeHandle || !YT_KEY) return;
+    setLoadingVideos(true);
+    fetchYouTubeData(youtubeHandle)
+      .then(({ photo, videos }) => {
+        setYtPhoto(photo);
+        setVideos(videos);
+      })
+      .catch(() => {})
+      .finally(() => setLoadingVideos(false));
+  }, [youtubeHandle]);
 
   const initials = artist.name
     .split(' ')
@@ -46,37 +99,6 @@ export default function ArtistPageClient({
     .join('')
     .slice(0, 2)
     .toUpperCase();
-
-  const socialLinks = [
-    artist.instagram && {
-      label: 'Instagram',
-      url: `https://instagram.com/${artist.instagram}`,
-      icon: '📸',
-    },
-    artist.facebook && {
-      label: 'Facebook',
-      url: `https://facebook.com/${artist.facebook}`,
-      icon: '👥',
-    },
-    artist.youtube_channel && {
-      label: 'YouTube',
-      url: `https://youtube.com/${artist.youtube_channel}`,
-      icon: '▶️',
-    },
-    artist.youtube_channel2 && {
-      label: 'YouTube 2',
-      url: `https://youtube.com/${artist.youtube_channel2}`,
-      icon: '▶️',
-    },
-  ].filter(Boolean);
-
-  const streamingLinks = [
-    artist.spotify_id && {
-      label: 'Spotify',
-      url: `https://open.spotify.com/artist/${artist.spotify_id}`,
-      color: 'bg-green-500',
-    },
-  ].filter(Boolean);
 
   return (
     <div className="min-h-screen bg-black">
@@ -212,7 +234,6 @@ export default function ArtistPageClient({
         {/* MUSIC */}
         {activeTab === 'music' && (
           <div className="space-y-12">
-            {/* Releases */}
             {artist.releases && artist.releases.length > 0 && (
               <div>
                 <h2 className="text-xl font-black text-white mb-6">Discographie</h2>
@@ -238,7 +259,6 @@ export default function ArtistPageClient({
                   ))}
                 </div>
 
-                {/* Player */}
                 {artist.releases[activeRelease] && (
                   <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-6">
                     <h3 className="text-white font-bold mb-4">
@@ -286,7 +306,6 @@ export default function ArtistPageClient({
               </div>
             )}
 
-            {/* Top Tracks from Spotify */}
             {topTracks.length > 0 && (
               <div>
                 <h2 className="text-xl font-black text-white mb-6">Top titres Spotify</h2>
@@ -321,7 +340,6 @@ export default function ArtistPageClient({
               </div>
             )}
 
-            {/* Empty state */}
             {(!artist.releases || artist.releases.length === 0) && topTracks.length === 0 && (
               <div className="text-center py-20">
                 <p className="text-zinc-500">Musique disponible bientôt.</p>
@@ -343,15 +361,17 @@ export default function ArtistPageClient({
         {/* VIDEOS */}
         {activeTab === 'videos' && (
           <div>
-            {videos.length > 0 ? (
+            {loadingVideos ? (
+              <div className="flex justify-center py-20">
+                <div className="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+              </div>
+            ) : videos.length > 0 ? (
               <>
-                <h2 className="text-xl font-black text-white mb-6">
-                  Clips ({videos.length})
-                </h2>
+                <h2 className="text-xl font-black text-white mb-6">Clips ({videos.length})</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {videos.map((video) => (
-                    <div key={video.id} className="rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800 group">
-                      <div className="aspect-video relative">
+                    <div key={video.id} className="rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800">
+                      <div className="aspect-video">
                         <iframe
                           src={`https://www.youtube.com/embed/${video.id}`}
                           title={video.title}
@@ -373,9 +393,9 @@ export default function ArtistPageClient({
             ) : (
               <div className="text-center py-20">
                 <p className="text-zinc-500 mb-4">Clips disponibles bientôt.</p>
-                {(artist.youtube_channel || artist.youtube_channel2) && (
+                {youtubeHandle && (
                   <a
-                    href={`https://youtube.com/${artist.youtube_channel ?? artist.youtube_channel2}`}
+                    href={`https://youtube.com/${youtubeHandle}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-red-400 hover:text-red-300 text-sm"
@@ -391,14 +411,12 @@ export default function ArtistPageClient({
         {/* ABOUT */}
         {activeTab === 'about' && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            {/* Bio */}
             <div className="md:col-span-2 space-y-8">
               <div>
                 <h2 className="text-xl font-black text-white mb-4">Biographie</h2>
                 <p className="text-zinc-400 leading-relaxed">{artist.bio}</p>
               </div>
 
-              {/* Timeline */}
               {artist.timeline && artist.timeline.length > 0 && (
                 <div>
                   <h2 className="text-xl font-black text-white mb-6">Parcours</h2>
@@ -422,9 +440,7 @@ export default function ArtistPageClient({
               )}
             </div>
 
-            {/* Sidebar */}
             <div className="space-y-6">
-              {/* Infos */}
               <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-5">
                 <h3 className="text-white font-bold text-sm mb-4">Infos</h3>
                 <div className="space-y-3">
@@ -451,7 +467,6 @@ export default function ArtistPageClient({
                 </div>
               </div>
 
-              {/* Liens */}
               <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-5">
                 <h3 className="text-white font-bold text-sm mb-4">Liens</h3>
                 <div className="space-y-2">
@@ -500,7 +515,6 @@ export default function ArtistPageClient({
                 </div>
               </div>
 
-              {/* Stats */}
               {artist.stats && Object.keys(artist.stats).length > 0 && (
                 <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-5">
                   <h3 className="text-white font-bold text-sm mb-4">Statistiques</h3>
