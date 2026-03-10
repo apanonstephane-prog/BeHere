@@ -1,9 +1,8 @@
 import { notFound } from 'next/navigation';
-import { getArtistBySlug, ARTISTS } from '@/lib/artists-data';
+import { getArtistBySlug } from '@/lib/artists-data';
 import { getSpotifyArtist, getSpotifyArtistTopTracks } from '@/lib/spotify';
 import ArtistPageClient from './ArtistPageClient';
 
-// Dynamic — Spotify fetched at request time, not build time
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -31,7 +30,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
         getSpotifyArtistTopTracks(artist.spotify_id),
       ]);
     } catch {
-      // Graceful fallback if Spotify unavailable
+      // Spotify unavailable — graceful fallback
     }
   }
 
@@ -39,14 +38,13 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
   const followers = spotifyData?.followers?.total
     ? new Intl.NumberFormat('fr-FR').format(spotifyData.followers.total)
     : null;
-  const monthlyListeners = artist.stats?.spotify ?? null;
 
   return (
     <ArtistPageClient
       artist={artist}
       photoUrl={photoUrl}
       followers={followers}
-      monthlyListeners={monthlyListeners}
+      monthlyListeners={artist.stats?.spotify ?? null}
       topTracks={topTracks?.tracks ?? []}
     />
   );
