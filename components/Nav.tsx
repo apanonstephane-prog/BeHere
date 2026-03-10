@@ -21,7 +21,7 @@ export default function Nav() {
           <img
             src="https://raw.githubusercontent.com/apanonstephane-prog/BeHere/main/BeHere_Logo_transparent.png"
             alt="BeHere"
-            className="h-8 w-8 object-contain"
+            className="h-12 w-12 object-contain"
             onError={(e) => {
               (e.target as HTMLImageElement).style.display = 'none';
             }}
