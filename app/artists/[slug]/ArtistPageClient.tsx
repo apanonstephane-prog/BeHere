@@ -48,7 +48,7 @@ export default function ArtistPageClient({
   const [videos, setVideos] = useState<YouTubeVideo[]>([]);
   const [loadingVideos, setLoadingVideos] = useState(false);
 
-  const photo = photoUrl;
+  const photo = artist.photo_url ?? photoUrl;
   const youtubeHandle = artist.youtube_channel ?? artist.youtube_channel2 ?? null;
 
   // Fetch automatique des clips depuis YouTube — côté client (navigateur)
@@ -370,17 +370,60 @@ export default function ArtistPageClient({
                   ))}
                 </div>
               </>
-            ) : (
-              <div className="text-center py-20">
-                <p className="text-zinc-500 mb-4">Clips disponibles bientôt.</p>
+            ) : artist.youtube_featured_video ? (
+              /* Fallback: show the featured video if YouTube API key not configured */
+              <div>
+                <h2 className="text-xl font-black text-white mb-6">Clip</h2>
+                <div className="max-w-2xl rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800">
+                  <div className="aspect-video">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${artist.youtube_featured_video}`}
+                      title={`${artist.name} — clip officiel`}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-full"
+                      loading="lazy"
+                    />
+                  </div>
+                </div>
                 {youtubeHandle && (
                   <a
                     href={`https://youtube.com/${youtubeHandle}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-red-400 hover:text-red-300 text-sm"
+                    className="mt-4 inline-flex items-center gap-2 text-red-400 hover:text-red-300 text-sm"
                   >
-                    Voir la chaîne YouTube →
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/>
+                    </svg>
+                    Voir toute la chaîne YouTube →
+                  </a>
+                )}
+              </div>
+            ) : (
+              <div className="text-center py-20">
+                <div className="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-red-400" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/>
+                  </svg>
+                </div>
+                <p className="text-zinc-400 font-medium mb-1">Clips YouTube</p>
+                <p className="text-zinc-600 text-sm mb-4">
+                  {youtubeHandle
+                    ? 'Configure NEXT_PUBLIC_YOUTUBE_API_KEY pour charger les clips automatiquement.'
+                    : 'Chaîne YouTube non renseignée.'}
+                </p>
+                {youtubeHandle && (
+                  <a
+                    href={`https://youtube.com/${youtubeHandle}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/15 rounded-full text-sm font-medium transition-all"
+                  >
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/>
+                    </svg>
+                    Voir la chaîne YouTube
                   </a>
                 )}
               </div>

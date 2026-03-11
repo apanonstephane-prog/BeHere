@@ -9,17 +9,17 @@ interface Props {
 }
 
 export default function ArtistCard({ artist }: Props) {
-  const [photo, setPhoto] = useState<string | null>(null);
+  const [photo, setPhoto] = useState<string | null>(artist.photo_url ?? null);
 
   useEffect(() => {
-    if (!artist.spotify_id) return;
+    if (photo || !artist.spotify_id) return;
     fetch(`/api/spotify?artistId=${artist.spotify_id}`)
       .then((r) => r.json())
       .then((data) => {
         if (data?.images?.[0]?.url) setPhoto(data.images[0].url);
       })
       .catch(() => {});
-  }, [artist.spotify_id]);
+  }, [artist.spotify_id, photo]);
 
   const initials = artist.name
     .split(' ')

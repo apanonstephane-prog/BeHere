@@ -1,6 +1,9 @@
 import Link from 'next/link';
 import { ARTISTS } from '@/lib/artists-data';
 import ArtistCard from '@/components/ArtistCard';
+import TrendingCard from '@/components/TrendingCard';
+import FeaturedArtistPhoto from '@/components/FeaturedArtistPhoto';
+import ParticleBackground from '@/components/ParticleBackground';
 
 export default function Home() {
   const featured = ARTISTS[0];
@@ -16,12 +19,14 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black text-white">
+      {/* Animated particle background */}
+      <ParticleBackground />
 
       {/* ── HERO ──────────────────────────────────────────────── */}
       <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-4">
         {/* Background grid */}
         <div
-          className="absolute inset-0 opacity-[0.04]"
+          className="absolute inset-0 opacity-[0.03]"
           style={{
             backgroundImage:
               'linear-gradient(rgba(245,158,11,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(245,158,11,0.6) 1px, transparent 1px)',
@@ -29,7 +34,7 @@ export default function Home() {
           }}
         />
         {/* Radial glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-amber-500/5 blur-[120px] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-amber-500/5 blur-[140px] pointer-events-none" />
         <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-black to-transparent" />
 
         <div className="relative z-10 text-center max-w-4xl mx-auto">
@@ -175,10 +180,8 @@ export default function Home() {
 
             <div className="relative flex flex-col md:flex-row md:items-center gap-8">
               {/* Avatar */}
-              <div className="w-24 h-24 md:w-32 md:h-32 shrink-0 rounded-2xl bg-gradient-to-br from-amber-500/20 via-amber-500/5 to-zinc-800 border border-amber-500/20 flex items-center justify-center">
-                <span className="text-4xl md:text-5xl font-black text-amber-400">
-                  {featured.name.charAt(0)}
-                </span>
+              <div className="w-24 h-24 md:w-32 md:h-32 shrink-0 rounded-2xl overflow-hidden border border-amber-500/20">
+                <FeaturedArtistPhoto artist={featured} className="rounded-2xl" />
               </div>
 
               {/* Info */}
@@ -201,14 +204,30 @@ export default function Home() {
                 </p>
                 <p className="text-zinc-400 text-sm line-clamp-2 mb-5 max-w-xl">{featured.bio}</p>
 
-                {featured.stats?.spotify && (
-                  <div className="flex items-center gap-1.5 text-green-400/80 text-xs">
-                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
-                    </svg>
-                    <span>{featured.stats.spotify.toLocaleString()} auditeurs mensuels</span>
-                  </div>
-                )}
+                <div className="flex flex-wrap items-center gap-3 mt-2">
+                  {featured.stats?.spotify && (
+                    <div className="flex items-center gap-1.5 text-green-400/80 text-xs">
+                      <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+                      </svg>
+                      <span>{featured.stats.spotify.toLocaleString()} auditeurs mensuels</span>
+                    </div>
+                  )}
+                  {featured.youtube_channel && (
+                    <a
+                      href={`https://youtube.com/${featured.youtube_channel}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="flex items-center gap-1.5 text-red-400/80 hover:text-red-400 text-xs transition-colors"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/>
+                      </svg>
+                      Voir les clips
+                    </a>
+                  )}
+                </div>
               </div>
 
               {/* Arrow */}
@@ -230,23 +249,7 @@ export default function Home() {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {trending.map((artist, i) => (
-            <Link key={artist.id} href={`/artists/${artist.slug}`} className="group block">
-              <div className="relative rounded-xl overflow-hidden bg-zinc-900/60 border border-zinc-800 hover:border-amber-500/40 transition-all duration-200 p-5">
-                <span className="absolute top-3 right-3 text-zinc-700 text-xs font-bold">#{i + 1}</span>
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500/25 to-zinc-800 flex items-center justify-center mb-4">
-                  <span className="text-lg font-bold text-amber-400">{artist.name.charAt(0)}</span>
-                </div>
-                <h4 className="text-white text-sm font-bold truncate group-hover:text-amber-400 transition-colors mb-0.5">
-                  {artist.name}
-                </h4>
-                <p className="text-zinc-600 text-xs truncate">{artist.genre.slice(0, 2).join(' · ')}</p>
-                {artist.stats?.spotify && (
-                  <p className="text-green-500/60 text-xs mt-2">
-                    {artist.stats.spotify.toLocaleString()} écoutes
-                  </p>
-                )}
-              </div>
-            </Link>
+            <TrendingCard key={artist.id} artist={artist} rank={i + 1} />
           ))}
         </div>
       </section>
