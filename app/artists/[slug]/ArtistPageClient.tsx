@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Artist } from '@/lib/artists-data';
 import { useState, useEffect } from 'react';
+import AIArtistInsights from '@/components/AIArtistInsights';
 
 interface SpotifyTrack {
   id: string;
@@ -42,7 +43,7 @@ export default function ArtistPageClient({
   monthlyListeners,
   topTracks,
 }: Props) {
-  const [activeTab, setActiveTab] = useState<'music' | 'videos' | 'about'>('music');
+  const [activeTab, setActiveTab] = useState<'music' | 'videos' | 'about' | 'ai'>('music');
   const [activeRelease, setActiveRelease] = useState(0);
   const [videos, setVideos] = useState<YouTubeVideo[]>([]);
   const [loadingVideos, setLoadingVideos] = useState(false);
@@ -196,17 +197,29 @@ export default function ArtistPageClient({
       {/* TABS */}
       <div className="sticky top-14 z-30 bg-black/90 backdrop-blur border-b border-zinc-900">
         <div className="max-w-6xl mx-auto px-4 flex gap-1">
-          {(['music', 'videos', 'about'] as const).map((tab) => (
+          {(['music', 'videos', 'about', 'ai'] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`py-4 px-6 text-sm font-medium transition-colors border-b-2 ${
+              className={`py-4 px-4 text-sm font-medium transition-colors border-b-2 flex items-center gap-1.5 ${
                 activeTab === tab
                   ? 'text-amber-400 border-amber-400'
                   : 'text-zinc-500 border-transparent hover:text-zinc-300'
               }`}
             >
-              {tab === 'music' ? 'Musique' : tab === 'videos' ? `Clips${videos.length ? ` (${videos.length})` : ''}` : 'À propos'}
+              {tab === 'music' && 'Musique'}
+              {tab === 'videos' && `Clips${videos.length ? ` (${videos.length})` : ''}`}
+              {tab === 'about' && 'À propos'}
+              {tab === 'ai' && (
+                <>
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                      d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"
+                    />
+                  </svg>
+                  Analyse IA
+                </>
+              )}
             </button>
           ))}
         </div>
@@ -370,6 +383,44 @@ export default function ArtistPageClient({
                     Voir la chaîne YouTube →
                   </a>
                 )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* AI INSIGHTS */}
+        {activeTab === 'ai' && (
+          <div className="max-w-2xl space-y-6">
+            <div>
+              <h2 className="text-xl font-black mb-1">Analyse IA</h2>
+              <p className="text-zinc-500 text-sm mb-6">
+                Analyse de style, ADN sonore et recommandations générées par Claude AI.
+              </p>
+              <AIArtistInsights slug={artist.slug} />
+            </div>
+
+            {/* Genre tags */}
+            <div className="p-5 bg-zinc-900/60 border border-zinc-800 rounded-xl">
+              <h3 className="text-zinc-400 text-xs uppercase tracking-wider mb-3">Genres</h3>
+              <div className="flex flex-wrap gap-2">
+                {artist.genre.map((g) => (
+                  <span key={g} className="px-3 py-1 bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm rounded-full">
+                    {g}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {artist.stats?.spotify && (
+              <div className="p-5 bg-zinc-900/60 border border-zinc-800 rounded-xl">
+                <h3 className="text-zinc-400 text-xs uppercase tracking-wider mb-3">Données Spotify</h3>
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+                  </svg>
+                  <span className="text-white font-bold">{artist.stats.spotify.toLocaleString()}</span>
+                  <span className="text-zinc-500 text-sm">auditeurs mensuels</span>
+                </div>
               </div>
             )}
           </div>
