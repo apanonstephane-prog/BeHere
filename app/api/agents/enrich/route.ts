@@ -3,6 +3,9 @@ import { ARTISTS } from '@/lib/artists-data';
 import { enrichArtistProfile } from '@/lib/enrichment';
 import { createClient } from '@supabase/supabase-js';
 
+// Augmente le timeout Vercel à 60s (nécessaire pour l'agent multi-sources + Claude)
+export const maxDuration = 60;
+
 // Supabase service client (only if configured)
 function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -46,17 +49,19 @@ export async function POST(req: NextRequest) {
     // Run the enrichment agent
     const result = await enrichArtistProfile(artist);
 
-    // Save to Supabase if configured
+    // Save to Supabase if configured (silencieux si table absente)
     if (supabase) {
-      await supabase.from('artist_enrichments').upsert({
-        artist_slug: slug,
-        photo_url: result.photo_url,
-        bio_enriched: result.bio_enriched,
-        sources: result.sources,
-        confidence: result.confidence,
-        raw_data: result.raw,
-        updated_at: result.updated_at,
-      }, { onConflict: 'artist_slug' });
+      try {
+        await supabase.from('artist_enrichments').upsert({
+          artist_slug: slug,
+          photo_url: result.photo_url,
+          bio_enriched: result.bio_enriched,
+          sources: result.sources,
+          confidence: result.confidence,
+          raw_data: result.raw,
+          updated_at: result.updated_at,
+        }, { onConflict: 'artist_slug' });
+      } catch { /* table absente ou erreur Supabase — pas bloquant */ }
     }
 
     return NextResponse.json({ ...result, from_cache: false });
