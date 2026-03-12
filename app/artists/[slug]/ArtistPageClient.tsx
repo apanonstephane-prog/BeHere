@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Artist } from '@/lib/artists-data';
 import { useState, useEffect } from 'react';
 import AIArtistInsights from '@/components/AIArtistInsights';
+import EnrichArtistButton from '@/components/EnrichArtistButton';
 
 interface SpotifyTrack {
   id: string;
@@ -47,9 +48,26 @@ export default function ArtistPageClient({
   const [activeRelease, setActiveRelease] = useState(0);
   const [videos, setVideos] = useState<YouTubeVideo[]>([]);
   const [loadingVideos, setLoadingVideos] = useState(false);
+  const [enrichedPhoto, setEnrichedPhoto] = useState<string | null>(null);
+  const [enrichedBio, setEnrichedBio] = useState<string | null>(null);
+  const [enrichmentSources, setEnrichmentSources] = useState<string[]>([]);
 
-  const photo = artist.photo_url ?? photoUrl;
+  const photo = enrichedPhoto ?? artist.photo_url ?? photoUrl;
   const youtubeHandle = artist.youtube_channel ?? artist.youtube_channel2 ?? null;
+
+  // Load cached enrichment on mount
+  useEffect(() => {
+    fetch(`/api/agents/enrich?slug=${artist.slug}`)
+      .then((r) => r.json())
+      .then((data: { cached?: boolean; photo_url?: string | null; bio_enriched?: string | null; sources?: string[] }) => {
+        if (data.cached) {
+          if (data.photo_url) setEnrichedPhoto(data.photo_url);
+          if (data.bio_enriched) setEnrichedBio(data.bio_enriched);
+          if (data.sources) setEnrichmentSources(data.sources);
+        }
+      })
+      .catch(() => {});
+  }, [artist.slug]);
 
   // Fetch automatique des clips depuis YouTube — côté client (navigateur)
   useEffect(() => {
@@ -156,6 +174,18 @@ export default function ArtistPageClient({
                     <p className="text-zinc-500 text-xs">Projets</p>
                   </div>
                 )}
+              </div>
+
+              {/* Enrichissement IA */}
+              <div className="mb-4">
+                <EnrichArtistButton
+                  slug={artist.slug}
+                  onEnriched={(result) => {
+                    if (result.photo_url) setEnrichedPhoto(result.photo_url);
+                    if (result.bio_enriched) setEnrichedBio(result.bio_enriched);
+                    if (result.sources) setEnrichmentSources(result.sources);
+                  }}
+                />
               </div>
 
               {/* Liens streaming */}
@@ -474,8 +504,22 @@ export default function ArtistPageClient({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             <div className="md:col-span-2 space-y-8">
               <div>
-                <h2 className="text-xl font-black text-white mb-4">Biographie</h2>
-                <p className="text-zinc-400 leading-relaxed">{artist.bio}</p>
+                <div className="flex items-start justify-between gap-4 mb-4">
+                  <h2 className="text-xl font-black text-white">Biographie</h2>
+                  {enrichmentSources.length > 0 && (
+                    <span className="text-xs text-zinc-500 shrink-0">
+                      Sources : {enrichmentSources.join(', ')}
+                    </span>
+                  )}
+                </div>
+                <p className="text-zinc-400 leading-relaxed">
+                  {enrichedBio ?? artist.bio}
+                </p>
+                {enrichedBio && enrichedBio !== artist.bio && (
+                  <p className="text-zinc-600 text-xs mt-3 italic">
+                    ✨ Biographie enrichie par l&apos;agent IA
+                  </p>
+                )}
               </div>
               {artist.timeline && artist.timeline.length > 0 && (
                 <div>

@@ -79,3 +79,36 @@ CREATE POLICY "waitlist_insert" ON waitlist
 
 CREATE POLICY "waitlist_service_read" ON waitlist
   FOR SELECT USING (auth.role() = 'service_role');
+
+-- ─── Table enrichissements IA ──────────────────────────────────────────────────
+-- Stocke les résultats de l'agent d'enrichissement multi-sources
+-- (Wikipedia, Deezer, MusicBrainz, iTunes + synthèse Claude)
+
+CREATE TABLE IF NOT EXISTS artist_enrichments (
+  id             UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  artist_slug    TEXT        NOT NULL UNIQUE,
+  photo_url      TEXT,
+  bio_enriched   TEXT,
+  sources        TEXT[]      DEFAULT '{}',
+  confidence     FLOAT       DEFAULT 0,
+  raw_data       JSONB       DEFAULT '{}',
+  created_at     TIMESTAMPTZ DEFAULT NOW(),
+  updated_at     TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_enrichments_slug ON artist_enrichments(artist_slug);
+CREATE INDEX IF NOT EXISTS idx_enrichments_updated ON artist_enrichments(updated_at DESC);
+
+ALTER TABLE artist_enrichments ENABLE ROW LEVEL SECURITY;
+
+-- Lecture publique
+CREATE POLICY "enrichments_public_read" ON artist_enrichments
+  FOR SELECT USING (TRUE);
+
+-- Écriture réservée au service role (API backend)
+CREATE POLICY "enrichments_service_write" ON artist_enrichments
+  FOR ALL USING (auth.role() = 'service_role');
+
+CREATE TRIGGER enrichments_updated_at
+  BEFORE UPDATE ON artist_enrichments
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
