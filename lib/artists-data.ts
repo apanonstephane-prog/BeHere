@@ -8,12 +8,14 @@ export interface Artist {
   genre: string[];
   category: 'music' | 'photo' | 'visual' | 'dance' | 'tattoo';
   bio: string;
+  photo_url?: string;
   spotify_id?: string;
   spotify_listeners?: string;
   instagram?: string;
   facebook?: string;
   youtube_channel?: string;
   youtube_channel2?: string;
+  youtube_featured_video?: string;
   booking_email?: string;
   website?: string;
   label?: string;
